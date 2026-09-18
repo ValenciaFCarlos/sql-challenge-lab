@@ -1,227 +1,61 @@
-# Knowledge Gap Engine™
+# Knowledge Gap Engine™ — Future Vision (Not Implemented)
 
-## Purpose
+> **Estado de implementación: 0%. Este documento describe una idea de producto, no una funcionalidad existente en SQL Challenge Lab™.**
+>
+> Lo que existe hoy en su lugar: `quiz-engine.js`, un motor de opción múltiple con preguntas en orden fijo, un umbral de aprobación por módulo (≥3/5 o ≥6/10 según el módulo), reintentos ilimitados, y persistencia del mejor puntaje. No hay dificultad adaptativa, no hay detección de conceptos débiles, y no hay perfil de maestría por tema. Ver `docs/dataset-framework.md` para la descripción del sistema real de evaluación.
+>
+> Este documento se conserva porque el diseño conceptual tiene valor — es una dirección legítima de mejora del producto — pero se reescribió por completo en tiempo futuro/condicional para no describirlo como si ya funcionara.
 
-The purpose of the Knowledge Gap Engine™ is not to determine whether a student passes or fails.
+## Purpose (visión)
 
-The purpose is to identify the exact concept where understanding breaks down.
+Un futuro Knowledge Gap Engine™ no buscaría determinar si un estudiante aprueba o reprueba, sino identificar el concepto exacto donde se rompe su comprensión — y recomendar qué hacer al respecto.
 
-SQL Challenge Lab™ does not evaluate students to assign grades.
+La pregunta que un sistema así intentaría responder no sería *"¿aprobó?"*, sino *"¿dónde está atorado, y qué debería hacer después?"*
 
-SQL Challenge Lab™ evaluates students to identify knowledge gaps and provide targeted learning recommendations.
+## Core Philosophy (visión)
 
----
+Un quiz tradicional (como el que existe hoy) mide desempeño en un momento dado. Un Knowledge Gap Engine™ real mediría comprensión a lo largo del tiempo, ajustando la dificultad según las respuestas del estudiante.
 
-# Core Philosophy
+## Cómo funcionaría (diseño conceptual, sin construir)
 
-Traditional quizzes measure performance.
+1. El sistema empezaría con preguntas de mayor complejidad sobre un concepto.
+2. Si el estudiante responde correctamente, asumiría dominio de ese concepto.
+3. Si responde incorrectamente, generaría preguntas de menor complejidad sobre el mismo concepto, hasta ubicar el nivel real de comprensión.
 
-The Knowledge Gap Engine™ measures understanding.
+**Requeriría construir:** un banco de preguntas etiquetado por concepto y nivel de dificultad (hoy las preguntas no tienen esa taxonomía), y lógica de ramificación en `quiz-engine.js` que hoy no existe (hoy el motor recorre las preguntas en orden fijo, sin decisiones basadas en respuestas previas).
 
-Instead of asking:
+### Niveles de dificultad propuestos
 
-Did the student pass?
+| Nivel | Nombre | Ejemplo de pregunta |
+|---|---|---|
+| 1 | Recognition | ¿Qué hace GROUP BY? |
+| 2 | Understanding | ¿Qué pasa con las filas después de agrupar? |
+| 3 | Application | Cuenta las ventas por cliente. |
+| 4 | Analysis | Encuentra clientes con ventas por encima del promedio. |
+| 5 | Mastery | Construye un análisis de retención de clientes. |
 
-The system asks:
+Ninguna pregunta real del proyecto está etiquetada hoy con este esquema de niveles.
 
-Where is the student struggling?
+## Ejemplo ilustrativo (hipotético, no un caso real del sistema)
 
-and
+*(El ejemplo original de este documento presentaba un resultado como si fuera una salida real del sistema. Se reescribe aquí explícitamente como hipotético, para no sugerir que ocurrió.)*
 
-What should the student do next?
+Si este sistema existiera, un flujo posible sería: un estudiante responde 3 de 5 preguntas de nivel alto sobre GROUP BY correctamente, el sistema detecta una debilidad específica en el concepto de "cambio de granularidad" tras agrupar, y lo ubica en nivel 2 de 5 para ese concepto puntual — en vez de solo decir "reprobaste GROUP BY".
 
----
+## Learning Recovery Plan™ (visión, no construido)
 
-# Evaluation Flow
+Tras detectar una brecha, el sistema propuesto generaría un plan de recuperación personalizado: lecciones específicas recomendadas, retos de práctica dirigidos al concepto débil, y un tiempo estimado de recuperación — con tres acciones posibles para el estudiante (retomar la lección, practicar ahora, o continuar bajo su propio riesgo).
 
-The system begins by presenting questions of higher complexity.
+**Requeriría construir:** un motor de recomendación que hoy no existe — el desbloqueo actual del roadmap es puramente lineal (completar el módulo N habilita el módulo N+1), sin ninguna rama personalizada según desempeño.
 
-If the student answers correctly, the platform assumes mastery.
+## SQL Dominance Profile™ (visión, no construido)
 
-If the student answers incorrectly, the platform generates additional questions of lower complexity focused on the same concept.
+La idea final sería un perfil de maestría por concepto SQL (SELECT, WHERE, GROUP BY, JOINs, Subqueries...), actualizado con cada evaluación, mostrando un porcentaje de dominio por tema — no una calificación general, sino un mapa de fortalezas y debilidades real.
 
-This process continues until the platform identifies the student's current level of understanding.
+**Requeriría construir:** agregación de resultados por concepto (hoy los resultados se guardan por módulo completo, no desglosados por técnica SQL dentro de ese módulo) y una vista de dashboard nueva para mostrarlo.
 
----
+## Mission (visión)
 
-# Difficulty Levels
+La misión detrás de esta idea — enseñar a pensar con datos, no a memorizar sintaxis, y diagnosticar brechas de comprensión en vez de solo calificar — sigue siendo válida como dirección de producto. Es, de hecho, coherente con la filosofía pedagógica que sí está implementada en el resto del curso (por ejemplo, la insistencia en "atributos" y "entidades" desde el Módulo 0, o el enfoque en criterio sobre memorización en el Módulo 16).
 
-## Level 1 — Recognition
-
-The student can identify concepts and terminology.
-
-Example:
-
-What does GROUP BY do?
-
----
-
-## Level 2 — Understanding
-
-The student can explain concepts in their own words.
-
-Example:
-
-What happens to rows after grouping?
-
----
-
-## Level 3 — Application
-
-The student can apply concepts to simple problems.
-
-Example:
-
-Count sales by customer.
-
----
-
-## Level 4 — Analysis
-
-The student can solve multi-step analytical problems.
-
-Example:
-
-Find customers with sales above average.
-
----
-
-## Level 5 — Mastery
-
-The student can solve real business scenarios.
-
-Example:
-
-Build a customer retention analysis.
-
----
-
-# Example
-
-Initial Assessment:
-
-5 Questions
-
-Level 5 Difficulty
-
-Student Result:
-
-3 / 5 Correct
-
-Detected Weakness:
-
-Module 5 — GROUP BY
-
-Concept:
-
-Granularity Change
-
-Detected Level:
-
-2 / 5
-
----
-
-# Knowledge Gap Detection™
-
-Once the system identifies the root concept causing difficulty, a knowledge gap is registered.
-
-Example:
-
-Knowledge Gap Detected™
-
-Module 5 — GROUP BY
-
-Concept:
-
-Granularity Change
-
-Level:
-
-2 / 5
-
----
-
-# Learning Recovery Plan™
-
-After detecting a knowledge gap, the platform generates a personalized recovery plan.
-
-Example:
-
-Recommended Lessons
-
-✓ What is Aggregation?
-
-✓ What does a row represent after grouping?
-
-Recommended Practice
-
-✓ Challenge G5-002
-
-✓ Challenge G5-003
-
-Estimated Time
-
-15 Minutes
-
----
-
-# Recovery Actions
-
-The student is presented with three options:
-
-## [ Retomar Lección ] ⭐ Recommended
-
-Return to the exact lesson where the gap was detected.
-
----
-
-## [ Practicar Ahora ] ⭐ Recommended
-
-Reinforce the concept through guided exercises.
-
----
-
-## [ Continuar de Todos Modos ] ⚠️ Not Recommended
-
-You may experience difficulties in future modules.
-
----
-
-# SQL Dominance Profile™
-
-Every assessment updates the student's mastery profile.
-
-Example:
-
-SELECT ............ 100%
-
-WHERE ............. 95%
-
-GROUP BY .......... 62%
-
-JOINs ............. 89%
-
-Subqueries ........ 44%
-
-The objective is not grading.
-
-The objective is continuous improvement.
-
----
-
-# Mission
-
-The Knowledge Gap Engine™ exists to identify weaknesses, reveal knowledge gaps and guide students toward mastery.
-
-The objective is not to evaluate performance.
-
-The objective is to develop understanding.
-
-By continuously diagnosing learning gaps and recommending targeted recovery paths, SQL Challenge Lab™ helps students build genuine analytical thinking and long-term SQL proficiency.
-
-SQL Challenge Lab™ teaches students how to think with data, not how to memorize syntax.
-
-The Knowledge Gap Engine™ exists to help students identify weaknesses, reinforce concepts and develop true SQL mastery.
-
-SQL Challenge Lab™ teaches students how to think with data, not how to memorize syntax.
+**Lo que falta para que deje de ser una visión:** un banco de preguntas taxonomizado por concepto y nivel, lógica de ramificación adaptativa en el motor de quiz, un modelo de datos que desglose resultados por concepto (no solo por módulo), y una interfaz de "plan de recuperación" — ninguno de estos cuatro componentes existe hoy en el repositorio.
