@@ -1,0 +1,3154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SQL Challenge Lab — practica SQL con 73 ejercicios reales, verificados contra SQLite, para dominar consultas, joins y optimización.">
+<meta name="theme-color" content="#05060c">
+<title>SQL Challenge Lab™ — Domina SQL resolviendo retos reales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/learning-mode.css">
+<style>
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+:root{
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 30px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 22px;
+
+  --color-bg: #05060c;
+  --color-surface: #0c0e1a;
+  --color-surface-elevated: #12152a;
+  --color-border: rgba(255,255,255,0.09);
+  --color-border-soft: rgba(255,255,255,0.05);
+
+  --color-text: #f4f5fb;
+  --color-text-secondary: #9aa1bd;
+  --color-text-muted: #656d8c;
+
+  --color-primary: #7c5cff;
+  --color-primary-hover: #8e71ff;
+  --color-primary-light: rgba(124,92,255,0.14);
+  --color-primary-2: #4f8dff;
+
+  --color-cyan: #6fe4ff;
+  --color-yellow: #f5c76e;
+  --color-green: #5fe3a1;
+  --color-magenta: #d16bff;
+
+  --color-shadow: rgba(0,0,0,0.55);
+  --transition: 0.15s ease;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; }
+
+.wrap{ max-width:1320px; margin:0 auto; padding:0 32px; }
+
+.bg-glow{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+.bg-glow span{ position:absolute; border-radius:50%; filter:blur(90px); }
+.bg-glow .g1{ width:720px; height:720px; top:-260px; right:-200px; background:radial-gradient(circle at 20% 20%, rgba(187,91,255,0.16), rgba(124,92,255,0.08) 40%, rgba(79,141,255,0.00) 70%); }
+.bg-glow .g2{ width:640px; height:640px; bottom:-300px; left:-220px; background:radial-gradient(circle at 80% 80%, rgba(79,141,255,0.12), rgba(124,92,255,0.04) 30%, rgba(124,92,255,0.00) 70%); }
+
+/* ==========================================================================
+   NAV
+   ========================================================================== */
+.nav-outer{
+  position:sticky;
+  top:0;
+  z-index:60;
+  padding:0;
+  width:100%;
+}
+.nav{
+  max-width: 100%;
+  width: 100%;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-4);
+  padding:12px 24px;
+  background: linear-gradient(180deg, rgba(12,14,26,0.85), rgba(10,10,18,0.65));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border:1px solid rgba(140,110,255,0.12);
+  box-shadow: 0 8px 40px rgba(124,92,255,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+/* ===== LOGO ===== */
+.brand{ 
+  display:flex; 
+  align-items:center; 
+  gap:var(--space-3); 
+  flex-shrink:0;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.brand:hover {
+  transform: scale(1.02);
+}
+.brand-icon{
+  width:52px; 
+  height:52px; 
+  border-radius:14px; 
+  display:grid; 
+  place-items:center;
+  background: linear-gradient(135deg, rgba(10,20,10,0.6), rgba(5,15,5,0.4));
+  border:1.5px solid rgba(80,255,120,0.4);
+  box-shadow: 0 8px 32px rgba(80,255,120,0.15), 0 0 0 8px rgba(80,255,120,0.03) inset, 0 0 60px rgba(80,255,120,0.06);
+  color: #fff; 
+  flex-shrink:0;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-icon::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--logo-glow-angle, 0deg),
+    transparent 0%,
+    rgba(80,255,120,0.6) 30%,
+    rgba(50,255,200,0.8) 50%,
+    rgba(80,255,120,0.6) 70%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: logoGlowSpin 4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@property --logo-glow-angle{
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes logoGlowSpin{
+  to{ --logo-glow-angle: 360deg; }
+}
+
+.brand-icon svg{ 
+  width:24px; 
+  height:24px; 
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 12px rgba(80,255,120,0.2));
+}
+
+.brand-icon .icon-bg-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: radial-gradient(circle at 30% 30%, rgba(80,255,120,0.15), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* LÍQUIDO VERDE */
+.liquid-container {
+  position: absolute;
+  bottom: 4px;
+  left: 8px;
+  right: 8px;
+  height: 30px;
+  overflow: hidden;
+  z-index: 1;
+  border-radius: 0 0 10px 10px;
+  pointer-events: none;
+}
+
+.liquid-surface {
+  position: absolute;
+  bottom: 0;
+  left: -20%;
+  width: 140%;
+  height: 100%;
+  background: radial-gradient(ellipse at 30% 100%, 
+    rgba(80, 255, 120, 0.9) 0%,
+    rgba(50, 255, 180, 0.8) 30%,
+    rgba(100, 255, 150, 0.6) 60%,
+    rgba(60, 200, 100, 0.4) 100%
+  );
+  border-radius: 40% 60% 0 0 / 80% 80% 0 0;
+  animation: liquidSlosh 3.5s ease-in-out infinite alternate, liquidPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(80, 255, 120, 0.5), inset 0 -8px 20px rgba(50, 255, 150, 0.3);
+}
+
+.liquid-surface::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 10%;
+  width: 30%;
+  height: 12px;
+  background: radial-gradient(ellipse, rgba(120, 255, 180, 0.7) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: bubbleFloat 2.8s ease-in-out infinite;
+}
+
+.liquid-surface::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: 20%;
+  width: 18%;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(150, 255, 200, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: bubbleFloat 3.6s ease-in-out infinite 0.8s;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180, 255, 220, 0.9), rgba(80, 255, 120, 0.3));
+  pointer-events: none;
+  animation: particleFloat var(--duration, 3s) ease-in-out infinite alternate;
+  box-shadow: 0 0 10px rgba(80, 255, 120, 0.4);
+}
+.particle:nth-child(1) { --duration: 2.8s; width: 4px; height: 4px; left: 15%; top: 40%; }
+.particle:nth-child(2) { --duration: 3.4s; width: 3px; height: 3px; left: 40%; top: 60%; }
+.particle:nth-child(3) { --duration: 4.0s; width: 5px; height: 5px; left: 65%; top: 30%; }
+.particle:nth-child(4) { --duration: 3.0s; width: 3px; height: 3px; left: 80%; top: 55%; }
+.particle:nth-child(5) { --duration: 3.8s; width: 4px; height: 4px; left: 25%; top: 75%; }
+.particle:nth-child(6) { --duration: 2.6s; width: 3px; height: 3px; left: 55%; top: 20%; }
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(200, 255, 230, 0.6), rgba(80, 255, 120, 0.1));
+  border: 0.5px solid rgba(80, 255, 120, 0.3);
+  pointer-events: none;
+  animation: bubbleRise var(--duration, 2.5s) ease-in infinite;
+}
+.bubble:nth-child(7) { --duration: 2.2s; width: 5px; height: 5px; left: 20%; bottom: -10px; }
+.bubble:nth-child(8) { --duration: 2.8s; width: 3px; height: 3px; left: 45%; bottom: -10px; }
+.bubble:nth-child(9) { --duration: 3.0s; width: 4px; height: 4px; left: 70%; bottom: -10px; }
+.bubble:nth-child(10) { --duration: 2.4s; width: 3px; height: 3px; left: 35%; bottom: -10px; }
+
+@keyframes liquidSlosh {
+  0% { 
+    border-radius: 40% 60% 0 0 / 80% 80% 0 0;
+    transform: translateX(-8%) scaleX(1.05);
+  }
+  50% {
+    border-radius: 50% 50% 0 0 / 70% 90% 0 0;
+    transform: translateX(5%) scaleX(0.95);
+  }
+  100% { 
+    border-radius: 60% 40% 0 0 / 90% 70% 0 0;
+    transform: translateX(8%) scaleX(1.02);
+  }
+}
+
+@keyframes liquidPulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; box-shadow: 0 0 40px rgba(80, 255, 120, 0.7), inset 0 -8px 20px rgba(50, 255, 150, 0.4); }
+}
+
+@keyframes bubbleFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+  50% { transform: translateY(-4px) scale(1.2); opacity: 1; }
+}
+
+@keyframes bubbleRise {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+}
+
+@keyframes particleFloat {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(6px, -8px) scale(1.3); opacity: 1; }
+  100% { transform: translate(-4px, -4px) scale(0.8); opacity: 0.5; }
+}
+
+.brand-text .name{ 
+  font-weight:800; 
+  font-size:18px; 
+  letter-spacing:-0.3px; 
+  color:var(--color-text); 
+  display:flex; 
+  align-items:baseline; 
+  gap:4px;
+  background: linear-gradient(90deg, #fff 60%, #8f6bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand-text .name sup{ 
+  font-size:10px; 
+  color:var(--color-text-muted); 
+  font-weight:600;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--color-text-muted);
+}
+.brand-text .tagline{ 
+  font-size:12px; 
+  color:var(--color-text-muted); 
+  margin-top:1px;
+  letter-spacing:0.2px;
+  opacity:0.8;
+}
+
+/* Contenedor derecho */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.nav-links{ 
+  display:flex; 
+  align-items:center; 
+  gap:var(--space-5); 
+}
+.nav-links a{ 
+  display:flex; 
+  align-items:center; 
+  gap:8px; 
+  font-size:15px; 
+  font-weight:500; 
+  color:var(--color-text-secondary); 
+  transition: color var(--transition), transform 0.2s ease;
+  white-space:nowrap;
+  padding:4px 0;
+  cursor:pointer;
+}
+.nav-links a svg{ 
+  width:17px; 
+  height:17px; 
+  opacity:0.85; 
+}
+.nav-links a:hover{ 
+  color:var(--color-text);
+  transform: translateY(-1px);
+}
+.nav-links a.donate{ 
+  color:#e6a3c9; 
+}
+.nav-links a.donate:hover{ 
+  color:#f2b8d8; 
+}
+
+.btn{
+  display:inline-flex; 
+  align-items:center; 
+  justify-content:center; 
+  gap:10px;
+  font-weight:600; 
+  font-size:15px; 
+  cursor:pointer;
+  border-radius: 999px; 
+  border:1px solid transparent;
+  padding: 14px 30px;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+  white-space:nowrap;
+}
+.btn svg{ width:16px; height:16px; }
+.btn-primary{
+  background: linear-gradient(135deg, #8f6bff 0%, #6f58ff 40%, #5b6bff 100%);
+  color:#fff;
+  box-shadow: 0 14px 40px -12px rgba(111,89,255,0.65), 0 6px 28px rgba(111,89,255,0.18);
+  padding:14px 32px;
+  font-size:16px;
+}
+.btn-primary:hover{ 
+  transform:translateY(-3px) scale(1.02); 
+  box-shadow: 0 24px 56px -10px rgba(111,89,255,0.85); 
+}
+.btn-outline{ 
+  background: transparent; 
+  border-color: var(--color-border); 
+  color: var(--color-text); 
+}
+.btn-outline:hover{ 
+  background: rgba(255,255,255,0.08); 
+  border-color: rgba(255,255,255,0.25); 
+  transform:translateY(-2px);
+}
+.btn-lg{ 
+  padding: 18px 32px; 
+  font-size:17px; 
+  border-radius: var(--radius-sm); 
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{
+  position:relative; z-index:1; overflow:hidden;
+  height: 100vh;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 10px 0;
+}
+
+.wave-ocean{
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  width:100vw;
+  bottom:-60px;
+  height:64%;
+  min-height:360px;
+  z-index:0;
+  pointer-events:none;
+  overflow:visible;
+  -webkit-mask-image: linear-gradient(to top, black 0%, black 55%, transparent 96%);
+          mask-image: linear-gradient(to top, black 0%, black 55%, transparent 96%);
+}
+.wave-ocean svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.wave-ocean path{ vector-effect: non-scaling-stroke; fill:none; }
+
+.horizon-glow{
+  position:absolute; left:50%; bottom:2%; transform:translateX(-50%);
+  width:min(1100px, 92vw); height:260px;
+  background: radial-gradient(ellipse at center, rgba(199,140,255,0.4) 0%, rgba(124,92,255,0.22) 32%, rgba(79,141,255,0.08) 58%, rgba(79,141,255,0) 78%);
+  filter: blur(46px);
+  z-index:0;
+  animation: horizonPulse 7s ease-in-out infinite;
+}
+@keyframes horizonPulse{
+  0%,100%{ opacity:0.7; transform:translateX(-50%) scale(1); }
+  50%{ opacity:1; transform:translateX(-50%) scale(1.06); }
+}
+
+.wave-layer{ mix-blend-mode: screen; }
+.wave-l1{ opacity:0.16; filter: blur(3.5px); }
+.wave-l2{ opacity:0.38; filter: blur(1.6px); }
+.wave-l3{ opacity:0.62; filter: blur(0.6px); }
+.wave-l4{ opacity:0.9; filter: blur(0.4px) drop-shadow(0 0 6px rgba(180,120,255,0.55)); }
+.wave-particles circle{ mix-blend-mode: screen; }
+
+.hero .wrap {
+  max-width: 1700px;
+  width: 95%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.hero-grid{
+  position:relative; z-index:2;
+  display:grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 60px;
+  align-items:center;
+  flex: 1;
+}
+
+.hero-left {
+  align-self: center;
+  transform: translateY(-85px);
+  margin-top: 0;
+}
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:14px;
+  font-weight:700; letter-spacing:0.06em;
+  color:#e9c46a;
+  background: rgba(233,196,106,0.08);
+  border:1px solid rgba(233,196,106,0.35);
+  padding:7px 15px; border-radius:999px;
+  margin-bottom: var(--space-4);
+}
+.eyebrow svg{ width:13px; height:13px; }
+
+h1{
+  font-family: var(--font-family);
+  font-weight:900;
+  font-size: clamp(64px, 8vw, 96px);
+  line-height: 0.92;
+  letter-spacing:-0.02em;
+  margin-bottom: var(--space-4);
+  color: #fff;
+}
+h1 .grad{
+  background: linear-gradient(90deg, #c67bff 0%, #8f6bff 40%, #5b6bff 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.hero p.lead{
+  font-size: 20px;
+  color:var(--color-text-secondary);
+  max-width:430px;
+  margin-bottom: var(--space-5);
+}
+
+.hero-ctas{ display:flex; gap:var(--space-3); margin-bottom: var(--space-5); flex-wrap:wrap; }
+.hero-ctas .btn-lg{
+  font-size: 17px;
+  padding: 18px 28px;
+}
+
+.stats-row{ display:flex; gap:var(--space-5); flex-wrap:wrap; margin-bottom:var(--space-4); }
+.stat{ display:flex; align-items:center; gap:9px; }
+.stat-icon{
+  width:40px; height:40px; border-radius:10px; display:grid; place-items:center;
+  background: var(--color-surface-elevated); border:1px solid var(--color-border); color: var(--color-primary); flex-shrink:0;
+}
+.stat-icon svg{ width:20px; height:20px; }
+.stat .num{ font-weight:700; font-size:22px; line-height:1.1; color:var(--color-text); }
+.stat .label{ font-size:13px; color:var(--color-text-muted); }
+
+/* ================================================================
+   OFFLINE TAG
+   ================================================================ */
+.offline-tag {
+  position: fixed;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  background: rgba(5, 6, 12, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(80, 255, 120, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(80, 255, 120, 0.03);
+  transition: all 0.3s ease;
+  user-select: none;
+  letter-spacing: 0.01em;
+}
+.offline-tag:hover {
+  border-color: rgba(80, 255, 120, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), 0 0 30px rgba(80, 255, 120, 0.06);
+  transform: translateX(-50%) scale(1.04);
+}
+.offline-tag .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(95, 227, 161, 0.15), 0 0 12px rgba(80, 255, 120, 0.2);
+  flex-shrink: 0;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(95, 227, 161, 0.15), 0 0 12px rgba(80, 255, 120, 0.15); }
+  50% { box-shadow: 0 0 0 4px rgba(95, 227, 161, 0.25), 0 0 24px rgba(80, 255, 120, 0.3); }
+}
+.offline-tag .label {
+  font-weight: 500;
+}
+.offline-tag .label strong {
+  color: #fff;
+  font-weight: 600;
+}
+.offline-tag .badge {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--color-green);
+  background: rgba(80, 255, 120, 0.1);
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(80, 255, 120, 0.1);
+}
+
+/* ================================================================
+   HERO VISUAL
+   ================================================================ */
+.hero-visual{ position:relative; height:700px; margin-left:-8px; }
+
+.visual-3d{
+  position:absolute; inset:0;
+  transform-origin: left center;
+  transform: perspective(800px) rotateY(-10deg) rotateX(2deg) translate(0px, -30px);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  will-change: transform;
+  animation: idleFloat 8s ease-in-out infinite;
+}
+
+.editor-card {
+  position: absolute;
+  top: -20px;
+  left: 120px;
+  width: 480px;
+  border-radius: calc(var(--radius) - 4px);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(6,7,14,0.97), rgba(10,11,20,0.9));
+  border: 1px solid rgba(150,120,255,0.22);
+  box-shadow: 0 40px 100px -28px rgba(92,57,180,0.65),
+              0 0 0 1px rgba(140,110,255,0.06) inset,
+              0 0 46px rgba(140,90,255,0.22),
+              0 0 90px rgba(90,120,255,0.12);
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+  will-change: transform;
+}
+
+.editor-card.is-back-4 {
+  z-index: 6;
+  opacity: 0.30;
+  filter: blur(2.5px);
+  transform: translateY(-30px) translateX(160px) scale(0.90);
+  animation: none;
+  background: rgba(120, 80, 255, 0.08);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(180, 120, 255, 0.15);
+  border-color: rgba(180, 120, 255, 0.20);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.30), 0 0 20px rgba(150,100,255,0.10);
+}
+.editor-card.is-back-4::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.06) 40%, transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.editor-card.is-back-3 {
+  z-index: 7;
+  opacity: 0.45;
+  filter: blur(1.8px);
+  transform: translateY(-10px) translateX(120px) scale(0.93);
+  animation: none;
+  background: rgba(120, 80, 255, 0.10);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(180, 120, 255, 0.20);
+  border-color: rgba(180, 120, 255, 0.25);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.35), 0 0 22px rgba(150,100,255,0.14);
+}
+.editor-card.is-back-3::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 40%, transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.editor-card.is-back-2 {
+  z-index: 8;
+  opacity: 0.60;
+  filter: blur(1.2px);
+  transform: translateY(10px) translateX(80px) scale(0.96);
+  animation: none;
+  background: rgba(120, 80, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(180, 120, 255, 0.25);
+  border-color: rgba(180, 120, 255, 0.30);
+  box-shadow: 0 14px 38px rgba(0,0,0,0.40), 0 0 24px rgba(150,100,255,0.18);
+}
+.editor-card.is-back-2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.10) 40%, transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.editor-card.is-back-1 {
+  z-index: 9;
+  opacity: 0.78;
+  filter: blur(0.8px);
+  transform: translateY(30px) translateX(40px) scale(0.98);
+  animation: none;
+  background: rgba(120, 80, 255, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(180, 120, 255, 0.30);
+  border-color: rgba(180, 120, 255, 0.38);
+  box-shadow: 0 16px 42px rgba(0,0,0,0.45), 0 0 26px rgba(150,100,255,0.22);
+}
+.editor-card.is-back-1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.12) 40%, transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.editor-card.is-front {
+  z-index: 10;
+  opacity: 1;
+  filter: none;
+  transform: none;
+  top: 55px;
+  animation: float-a 8s ease-in-out infinite;
+  background: linear-gradient(180deg, rgba(6,7,14,0.97), rgba(10,11,20,0.9));
+  backdrop-filter: none;
+  border: 1px solid rgba(150,120,255,0.22);
+  box-shadow: 0 40px 100px -28px rgba(92,57,180,0.65),
+              0 0 0 1px rgba(140,110,255,0.06) inset,
+              0 0 46px rgba(140,90,255,0.22),
+              0 0 90px rgba(90,120,255,0.12);
+}
+
+.editor-card.is-back-4 .code-lines,
+.editor-card.is-back-3 .code-lines,
+.editor-card.is-back-2 .code-lines,
+.editor-card.is-back-1 .code-lines {
+  color: rgba(255, 255, 255, 0.4);
+}
+.editor-card.is-back-4 .line-numbers,
+.editor-card.is-back-3 .line-numbers,
+.editor-card.is-back-2 .line-numbers,
+.editor-card.is-back-1 .line-numbers {
+  color: rgba(255, 255, 255, 0.2);
+}
+.editor-card.is-back-4 .editor-bar,
+.editor-card.is-back-3 .editor-bar,
+.editor-card.is-back-2 .editor-bar,
+.editor-card.is-back-1 .editor-bar {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom-color: rgba(255, 255, 255, 0.03);
+}
+.editor-card.is-back-4 .editor-bar .filename,
+.editor-card.is-back-3 .editor-bar .filename,
+.editor-card.is-back-2 .editor-bar .filename,
+.editor-card.is-back-1 .editor-bar .filename {
+  color: rgba(255, 255, 255, 0.25);
+}
+.editor-card.is-back-4 .kw,
+.editor-card.is-back-3 .kw,
+.editor-card.is-back-2 .kw,
+.editor-card.is-back-1 .kw { color: rgba(111, 228, 255, 0.4); }
+.editor-card.is-back-4 .str,
+.editor-card.is-back-3 .str,
+.editor-card.is-back-2 .str,
+.editor-card.is-back-1 .str { color: rgba(245, 199, 110, 0.4); }
+.editor-card.is-back-4 .fn,
+.editor-card.is-back-3 .fn,
+.editor-card.is-back-2 .fn,
+.editor-card.is-back-1 .fn { color: rgba(209, 107, 255, 0.4); }
+.editor-card.is-back-4 .pln,
+.editor-card.is-back-3 .pln,
+.editor-card.is-back-2 .pln,
+.editor-card.is-back-1 .pln { color: rgba(255, 255, 255, 0.3); }
+
+.progress-card {
+  position: absolute;
+  bottom: 260px;
+  right: 240px;
+  width: 260px;
+  padding: 14px 16px 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(14,12,28,0.95), rgba(10,8,24,0.88));
+  border: 1px solid rgba(150,120,255,0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 40px 90px -24px rgba(70,34,150,0.62),
+              0 0 40px -6px rgba(124,92,255,0.22) inset,
+              0 0 40px rgba(140,90,255,0.20);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+.progress-card.is-back {
+  z-index: 5;
+  opacity: 0.15;
+  filter: blur(2px);
+  transform: translateY(-20px) translateX(24px);
+  animation: none;
+  border-color: rgba(180,120,255,0.08);
+}
+.progress-card.is-mid {
+  z-index: 6;
+  opacity: 0.30;
+  filter: blur(1px);
+  transform: translateY(-10px) translateX(12px);
+  animation: none;
+  border-color: rgba(180,120,255,0.14);
+}
+.progress-card.is-front {
+  z-index: 11;
+  opacity: 1;
+  filter: none;
+  transform: none;
+  animation: float-b 7s ease-in-out infinite;
+  animation-delay: .5s;
+}
+
+.editor-bar { display:flex; align-items:center; gap:7px; padding:13px 17px; background: var(--color-surface-elevated); border-bottom:1px solid var(--color-border); }
+.editor-bar .dot{ width:10px; height:10px; border-radius:50%; }
+.dot-r{ background:#ff5f57; } .dot-y{ background:#febc2e; } .dot-g{ background:#28c840; }
+.editor-bar .filename{ margin-left:8px; display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; color:var(--color-text-muted); }
+.editor-bar .filename svg{ width:11px; height:11px; opacity:0.8; }
+
+.editor-body{ display:flex; padding:24px 0; }
+.line-numbers{ font-family:var(--font-mono); font-size:13px; line-height:2.05; color: var(--color-text-muted); text-align:right; padding:0 15px 0 18px; user-select:none; border-right:1px solid var(--color-border-soft); }
+.code-lines{ position:relative; font-family:var(--font-mono); font-size:13px; line-height:2.05; padding:0 20px; white-space:pre-wrap; color:var(--color-text); margin:0; flex:1; }
+.code-lines code{ display:block; }
+.kw{ color: var(--color-cyan); }
+.str{ color: var(--color-yellow); }
+.fn{ color: var(--color-magenta); }
+.pln{ color: var(--color-text); }
+.mut{ color: var(--color-text-secondary); }
+
+@property --glow-angle{
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.editor-card.is-front{
+  overflow: visible;
+}
+.editor-inner{
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.editor-card.is-front::before{
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    transparent 74%,
+    rgba(180,140,255,0.55) 84%,
+    #fff 90%,
+    var(--color-cyan) 94%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: editorGlowSpin 3.4s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes editorGlowSpin{
+  to{ --glow-angle: 360deg; }
+}
+
+.editor-card.is-front .editor-cursor {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--color-primary-2);
+  font-weight: 400;
+  animation: blink 1s steps(2, start) infinite;
+}
+.editor-card:not(.is-front) .editor-cursor { display: none; }
+@keyframes blink{ 0%,50%{ opacity:1 } 51%,100%{ opacity:0 } }
+
+.editor-card.is-front .prompt-caret{
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary-2);
+  animation: blink 1s steps(2, start) infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.progress-card .head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.progress-card .head-icon{ width:26px; height:26px; border-radius:8px; background: linear-gradient(135deg, #b07bff 0%, #7b64ff 100%); display:grid; place-items:center; flex-shrink:0; box-shadow: 0 8px 26px rgba(111,89,255,0.18); }
+.progress-card .head-icon svg{ width:12px; height:12px; color:#fff; }
+.progress-card .head-title{ font-size:12px; font-weight:800; color:#fff; }
+.progress-card .sub{ font-size:9px; color:var(--color-text-muted); margin-bottom:0px; }
+.progress-card .rank{ font-size:12px; font-weight:800; color:var(--color-primary-2); margin-bottom:4px; }
+
+.chart-wrap{ margin-bottom:6px; }
+.chart-wrap svg{ width:100%; height:70px; display:block; overflow:visible; }
+.chart-grid-line{ stroke:rgba(255,255,255,0.055); stroke-width:1; }
+.chart-axis{ stroke:rgba(255,255,255,0.16); stroke-width:1; }
+
+.chart-area{ fill: url(#chartAreaGradFront); opacity:0.25; }
+.chart-line{ stroke-width:2.2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.chart-line-glow{ stroke-width:6; fill:none; stroke-linecap:round; stroke-linejoin:round; opacity:0.35; filter: url(#glowFilter); }
+.chart-dot{ fill:#c9b6ff; cursor:default; }
+
+.progress-foot{ display:flex; align-items:center; justify-content:space-between; font-size:9px; color:var(--color-text-muted); margin-bottom:4px; }
+.progress-foot .left{ display:flex; align-items:center; gap:6px; }
+.progress-foot b{
+  font-weight:700;
+  background: linear-gradient(90deg, #fff, #8f6bff, #fff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShine 2.5s linear infinite;
+  transition: transform 0.2s ease;
+  display:inline-block;
+}
+.progress-foot b.pulse{
+  animation: pulseNumber 0.4s ease 2, textShine 2.5s linear infinite;
+}
+@keyframes pulseNumber{
+  0%{ transform: scale(1); }
+  50%{ transform: scale(1.25); opacity:0.8; }
+  100%{ transform: scale(1); }
+}
+@keyframes textShine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.percentage{
+  font-size:8px;
+  color:var(--color-text-secondary);
+  background: rgba(255,255,255,0.06);
+  padding:1px 6px;
+  border-radius:12px;
+}
+
+.progress-track{ height:4px; border-radius:999px; background:var(--color-border); overflow:hidden; }
+
+.progress-fill{
+  height:100%;
+  border-radius:999px;
+  transition: width 1s ease, background 0.8s ease;
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.75) 50%, transparent 100%);
+  width: 80%;
+  filter: blur(2px);
+  animation: fillShimmer 3.6s ease-in-out infinite;
+}
+@keyframes fillShimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+.connection-line{
+  position: absolute;
+  right: 240px;
+  bottom: 260px;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(124,92,255,0.25), rgba(124,92,255,0.05));
+  z-index: 4;
+  transform: rotate(-15deg) translateX(0px);
+  transform-origin: right center;
+  filter: blur(1px);
+  pointer-events: none;
+  opacity: 0.8;
+  box-shadow: 0 0 12px rgba(124,92,255,0.15);
+}
+
+@keyframes float-a{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-11px); }
+}
+@keyframes float-b{
+  0%,100%{ transform: translateZ(45px) translateY(0); }
+  50%{ transform: translateZ(45px) translateY(10px); }
+}
+
+.visual-3d:hover{
+  transform: perspective(800px) rotateY(-12deg) rotateX(2.5deg) translate(0px, -30px) translateY(-6px);
+}
+.visual-3d:hover .editor-card.is-front{ transform: translateY(-6px); }
+.visual-3d:hover .editor-card.is-back-1{ transform: translateY(30px) translateX(40px) scale(0.98) translateY(-4px); }
+.visual-3d:hover .editor-card.is-back-2{ transform: translateY(10px) translateX(80px) scale(0.96) translateY(-3px); }
+.visual-3d:hover .editor-card.is-back-3{ transform: translateY(-10px) translateX(120px) scale(0.93) translateY(-2px); }
+.visual-3d:hover .editor-card.is-back-4{ transform: translateY(-30px) translateX(160px) scale(0.90) translateY(-1px); }
+.visual-3d:hover .progress-card.is-front{ transform: translateZ(45px) translateY(-4px); }
+
+@keyframes idleFloat{
+  0%,100%{ transform: perspective(800px) rotateY(-10deg) rotateX(2deg) translate(0px, -30px) translateY(0); }
+  50%{ transform: perspective(800px) rotateY(-10deg) rotateX(2deg) translate(0px, -30px) translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .editor-card.is-front, .progress-card.is-front, .visual-3d, .editor-card.is-front::before{ animation:none; }
+  .horizon-glow{ animation:none; }
+  .progress-foot b { animation: none; background: none; color: var(--color-text); }
+  .progress-fill::after { animation: none; }
+  .chart-dot { animation: none !important; }
+}
+:focus-visible{ outline:2px solid var(--color-primary-2); outline-offset:2px; }
+
+.features, .ranks, .donate-cta, footer { display: none; }
+
+@media (max-width: 980px){
+  .hero{ height: auto; min-height: 100vh; overflow-y: auto; padding: 40px 0 10px 0; }
+  .hero .wrap {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .hero-grid{
+    grid-template-columns:1fr;
+    gap: var(--space-5);
+    flex: none;
+  }
+  .hero-left { transform: none; align-self: auto; margin-top: 0; }
+  .hero-visual{ height:420px; margin-top:20px; margin-left:0; }
+  .visual-3d{ transform:none !important; animation:none; }
+  .editor-card.is-back-4, .editor-card.is-back-3,
+  .editor-card.is-back-2, .editor-card.is-back-1,
+  .progress-card.is-back, .progress-card.is-mid,
+  .connection-line { display: none; }
+  .editor-card.is-front { position: static; width: 100%; animation: none; transform: none !important; }
+  .progress-card.is-front { position: absolute; bottom: -10px; right: 6%; animation: none; transform: none !important; padding: 12px; width: 200px; }
+  .progress-card.is-front .chart-wrap svg{ height:55px; }
+  .progress-card.is-front .head-icon{ width:24px; height:24px; }
+  .features, .ranks, .donate-cta, footer { display: none; }
+  .offline-tag {
+    bottom: 3vh;
+    padding: 4px 12px;
+    font-size: 10px;
+    gap: 5px;
+  }
+  .offline-tag .badge { display: none; }
+  .offline-tag .dot { width: 4px; height: 4px; }
+}
+@media (max-width: 560px){
+  .wrap{ padding: 0 20px; }
+  .nav-outer{ padding: var(--space-4) var(--space-4) 0; }
+  .stats-row{ gap: var(--space-4); }
+  h1{ font-size: clamp(44px, 10vw, 56px); }
+  .hero p.lead{ font-size: 16px; }
+  .nav-right .nav-links a:not(.donate) { display: none; }
+  .nav-right .nav-links a.donate { font-size: 14px; }
+  .btn-primary { padding: 10px 20px; font-size: 13px; }
+  .brand-icon { width: 44px; height: 44px; }
+  .brand-icon svg { width: 20px; height: 20px; }
+  .brand-text .name { font-size: 15px; }
+  .brand-text .tagline { font-size: 10px; }
+  .liquid-container { height: 24px; left: 6px; right: 6px; }
+  .offline-tag {
+    bottom: 2.5vh;
+    padding: 3px 10px;
+    font-size: 9px;
+    gap: 4px;
+    border-radius: 999px;
+  }
+  .offline-tag .dot { width: 4px; height: 4px; }
+  .offline-tag .badge { display: none; }
+}
+
+/* ================================================================
+   MODAL - ESTILOS BASE
+   ================================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 6, 12, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 24px;
+  animation: overlayIn 0.3s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  max-height: 80vh;
+  background: linear-gradient(180deg, rgba(12,14,26,0.98), rgba(10,11,20,0.95));
+  border: 1px solid rgba(150,120,255,0.15);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 40px 100px -28px rgba(92,57,180,0.65), 0 0 80px rgba(124,92,255,0.04);
+  overflow: hidden;
+  animation: modalIn 0.35s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at 30% 30%, rgba(124,92,255,0.08), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.modal::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at 70% 70%, rgba(79,141,255,0.05), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.modal-scroll {
+  position: relative;
+  z-index: 1;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 32px 36px 28px;
+  scroll-behavior: smooth;
+}
+
+.modal-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ===== HEADER ===== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-soft);
+  margin-bottom: 24px;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Botón rojo eléctrico - esquina superior derecha */
+.modal-close-btn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  background: #ff1744;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.4), 0 0 60px rgba(255, 23, 68, 0.1);
+  position: relative;
+}
+
+.modal-close-btn:hover {
+  background: #ff1744;
+  transform: scale(1.15);
+  box-shadow: 0 0 30px rgba(255, 23, 68, 0.6), 0 0 80px rgba(255, 23, 68, 0.2);
+}
+
+.modal-close-btn svg {
+  width: 9px;
+  height: 9px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: #fff;
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.modal-close-btn:hover svg {
+  opacity: 1;
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-primary-light);
+  border: 1px solid rgba(124,92,255,0.25);
+  box-shadow: 0 0 30px rgba(124,92,255,0.08), 0 0 60px rgba(124,92,255,0.04);
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+.modal-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* ===== CONTENIDO ===== */
+.modal-content p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.modal-content p:last-child {
+  margin-bottom: 0;
+}
+
+.modal-content .highlight {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.modal-content .accent {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.modal-content .separator {
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 999px;
+  margin: 16px 0;
+  opacity: 0.4;
+}
+
+/* ===== FEATURE CARDS ===== */
+.modal-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+
+.modal-feature-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-sm);
+  padding: 18px 18px 20px;
+  transition: all 0.25s ease;
+}
+
+.modal-feature-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+
+.modal-feature-card .icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--color-primary-light);
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+.modal-feature-card .icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.modal-feature-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.modal-feature-card p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.modal-feature-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-feature-card ul li {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  padding-left: 18px;
+  position: relative;
+}
+.modal-feature-card ul li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+
+.modal-feature-card .badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.modal-feature-card .badge-list span {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-border-soft);
+  color: var(--color-text-secondary);
+}
+
+/* ===== ROADMAP MODAL ===== */
+.roadmap-phases {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0 20px;
+}
+
+.phase-block {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.phase-block .phase-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.phase-block .phase-title .badge {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 1px 10px;
+  border-radius: 999px;
+}
+
+.phase-block .phase-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.phase-modules-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.phase-modules-tags span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  background: rgba(255,255,255,0.03);
+  padding: 1px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-soft);
+}
+
+/* ===== DEVELOPERS MODAL ===== */
+.tech-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+.tech-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tech-item .tech-icon {
+  font-size: 16px;
+}
+.tech-item .tech-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.tech-item .tech-desc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* ===== DONATE MODAL ===== */
+.donate-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 20px;
+}
+.donate-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  transition: all 0.25s ease;
+}
+.donate-option:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+.donate-option .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.donate-option .left .emoji {
+  font-size: 20px;
+}
+.donate-option .left .info .name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.donate-option .left .info .desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.donate-option .btn-donate {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.donate-option .btn-donate:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ===== CTA ===== */
+.modal-cta {
+  text-align: center;
+  padding: 20px 0 6px;
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.modal-cta p {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+.modal-cta .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #8f6bff 0%, #6f58ff 40%, #5b6bff 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 14px 40px -12px rgba(111,89,255,0.5);
+  text-decoration: none;
+}
+.modal-cta .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 50px -10px rgba(111,89,255,0.7);
+}
+.modal-cta .btn-primary svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ===== FOOTER ===== */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  margin-top: 4px;
+  border-top: 1px solid var(--color-border-soft);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.01em;
+}
+
+.modal-footer .version {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-footer .version .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  opacity: 0.3;
+}
+
+.modal-footer .built {
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .modal-scroll {
+    padding: 24px 20px 20px;
+  }
+  .modal-features {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .modal-title {
+    font-size: 16px;
+  }
+  .modal-icon {
+    width: 38px;
+    height: 38px;
+  }
+  .modal-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+  .modal {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: var(--radius);
+  }
+  .modal-cta p {
+    font-size: 14px;
+  }
+  .tech-grid {
+    grid-template-columns: 1fr;
+  }
+  .roadmap-phases {
+    gap: 12px;
+  }
+  .donate-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-scroll {
+    padding: 18px 16px 16px;
+  }
+  .modal-header {
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .modal-title {
+    font-size: 14px;
+  }
+  .modal-content p {
+    font-size: 13px;
+  }
+  .modal-footer {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .modal-close-btn {
+    width: 14px;
+    height: 14px;
+  }
+  .modal-close-btn svg {
+    width: 7px;
+    height: 7px;
+  }
+  .phase-block .phase-title {
+    font-size: 13px;
+  }
+  .phase-modules-tags span {
+    font-size: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"><span class="g1"></span><span class="g2"></span></div>
+
+<div class="nav-outer">
+  <nav class="nav">
+    <div class="brand" id="brand-logo">
+      <div class="brand-icon">
+        <div class="icon-bg-glow"></div>
+        <svg role="img" aria-label="Logo de SQL Challenge Lab" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><title>Logo de SQL Challenge Lab</title><path d="M9 2h6M10 2v6.2a2 2 0 0 1-.3 1L5.4 16.8A2 2 0 0 0 7.1 20h9.8a2 2 0 0 0 1.7-3.2L14.3 9.2a2 2 0 0 1-.3-1V2"/><path d="M8.5 14h7"/></svg>
+        
+        <div class="liquid-container">
+          <div class="liquid-surface"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+        </div>
+      </div>
+      <div class="brand-text">
+        <div class="name">SQL Challenge Lab<sup>™</sup></div>
+        <div class="tagline">Domina SQL. Resuelve retos. Crece sin límites.</div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-links">
+        <a id="roadmapTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v16H6.5A2.5 2.5 0 0 0 4 20.5V4.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/></svg>Roadmap</a>
+        <a id="aboutTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>About</a>
+        <a id="developersTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6 2 12l6 6M16 6l6 6-6 6"/></svg>Developers</a>
+        <a id="githubTrigger"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.5v-1.94c-2.78.62-3.37-1.19-3.37-1.19-.46-1.2-1.11-1.52-1.11-1.52-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.43.2 2.49.1 2.75.64.72 1.03 1.63 1.03 2.75 0 3.92-2.34 4.78-4.57 5.04.36.32.68.94.68 1.9v2.82c0 .28.18.61.69.5A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>GitHub</a>
+        <a id="donateTrigger" class="donate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.3a5 5 0 0 0-8.3-3.7 5 5 0 0 0-8.3 3.7c0 6.4 8.3 11 8.3 11s8.3-4.6 8.3-11z"/></svg>Donate</a>
+      </div>
+
+      <a href="app.html" class="btn btn-primary">Abrir App
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<main id="maincontent">
+  <section class="hero" id="hero">
+
+    <div class="wave-ocean" id="waveOcean" aria-hidden="true">
+      <div class="horizon-glow"></div>
+      <svg class="wave-layer wave-l1" viewBox="0 0 1440 500" preserveAspectRatio="none"><defs></defs></svg>
+      <svg class="wave-layer wave-l2" viewBox="0 0 1440 500" preserveAspectRatio="none"></svg>
+      <svg class="wave-layer wave-l3" viewBox="0 0 1440 500" preserveAspectRatio="none"></svg>
+      <svg class="wave-layer wave-l4" viewBox="0 0 1440 500" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="waveGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop id="gStop1" offset="0%" stop-color="#4f8dff"/>
+            <stop id="gStop2" offset="50%" stop-color="#8f6bff"/>
+            <stop id="gStop3" offset="100%" stop-color="#d16bff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg class="wave-particles" id="waveParticles" viewBox="0 0 1440 500" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="wrap hero-grid">
+      <div class="hero-left">
+        <span class="eyebrow">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 21h8M12 17v4M6 4h12v2a6 6 0 0 1-4.6 5.83A2 2 0 0 0 12 14a2 2 0 0 0-1.4-1.17A6 6 0 0 1 6 6V4z"/><path d="M6 6H3v1a4 4 0 0 0 3 3.87M18 6h3v1a4 4 0 0 1-3 3.87" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          Plataforma de aprendizaje interactiva
+        </span>
+
+        <h1>Domina SQL<br>resolviendo<br><span class="grad">retos reales.</span></h1>
+
+        <p class="lead">Practica. Aprende. Mejora. 73 ejercicios reales diseñados para llevar tus habilidades SQL al siguiente nivel. <strong style="color: #fff;">100% gratuito</strong> y open source.</p>
+
+        <div class="hero-ctas">
+          <a href="app.html" class="btn btn-primary btn-lg">Comenzar a practicar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="app.html#roadmap" class="btn btn-outline btn-lg">Ver roadmap</a>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+            <div><div class="num">73</div><div class="label">Ejercicios</div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <div><div class="num">18</div><div class="label">Módulos</div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+            <div><div class="num">60</div><div class="label">Preguntas de Quiz</div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 12.2a5 5 0 0 1 6.5 4.8"/></svg></div>
+            <div><div class="num">18</div><div class="label">Badges</div></div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 8a4 4 0 1 0 0 8c3 0 4.7-8 8-8a4 4 0 1 1 0 8c-3.3 0-5-8-8-8z"/></svg></div>
+            <div><div class="num">Infinitas</div><div class="label">Posibilidades</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" id="heroVisual">
+        <div class="visual-3d" id="visual3d">
+
+          <div class="editor-card is-back-4">
+            <div class="editor-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="filename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
+                query.sql
+              </span>
+            </div>
+            <div class="editor-body">
+              <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+              <pre class="code-lines"><code>
+<span class="kw">SELECT</span> <span class="pln">c.name, </span><span class="fn">COUNT</span><span class="pln">(o.id) </span><span class="kw">AS</span> <span class="pln">orders</span>
+<span class="kw">FROM</span> <span class="pln">customers c</span>
+<span class="kw">JOIN</span> <span class="pln">orders o </span><span class="kw">ON</span> <span class="pln">c.id = o.customer_id</span>
+<span class="kw">WHERE</span> <span class="pln">c.country = </span><span class="str">'Mexico'</span>
+<span class="kw">GROUP BY</span> <span class="pln">c.name</span>
+<span class="kw">ORDER BY</span> <span class="pln">orders </span><span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="pln">10;</span>
+</code></pre>
+            </div>
+          </div>
+
+          <div class="editor-card is-back-3">
+            <div class="editor-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="filename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
+                query.sql
+              </span>
+            </div>
+            <div class="editor-body">
+              <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+              <pre class="code-lines"><code>
+<span class="kw">SELECT</span> <span class="pln">c.name, </span><span class="fn">COUNT</span><span class="pln">(o.id) </span><span class="kw">AS</span> <span class="pln">orders</span>
+<span class="kw">FROM</span> <span class="pln">customers c</span>
+<span class="kw">JOIN</span> <span class="pln">orders o </span><span class="kw">ON</span> <span class="pln">c.id = o.customer_id</span>
+<span class="kw">WHERE</span> <span class="pln">c.country = </span><span class="str">'Mexico'</span>
+<span class="kw">GROUP BY</span> <span class="pln">c.name</span>
+<span class="kw">ORDER BY</span> <span class="pln">orders </span><span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="pln">10;</span>
+</code></pre>
+            </div>
+          </div>
+
+          <div class="editor-card is-back-2">
+            <div class="editor-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="filename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
+                query.sql
+              </span>
+            </div>
+            <div class="editor-body">
+              <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+              <pre class="code-lines"><code>
+<span class="kw">SELECT</span> <span class="pln">c.name, </span><span class="fn">COUNT</span><span class="pln">(o.id) </span><span class="kw">AS</span> <span class="pln">orders</span>
+<span class="kw">FROM</span> <span class="pln">customers c</span>
+<span class="kw">JOIN</span> <span class="pln">orders o </span><span class="kw">ON</span> <span class="pln">c.id = o.customer_id</span>
+<span class="kw">WHERE</span> <span class="pln">c.country = </span><span class="str">'Mexico'</span>
+<span class="kw">GROUP BY</span> <span class="pln">c.name</span>
+<span class="kw">ORDER BY</span> <span class="pln">orders </span><span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="pln">10;</span>
+</code></pre>
+            </div>
+          </div>
+
+          <div class="editor-card is-back-1">
+            <div class="editor-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="filename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
+                query.sql
+              </span>
+            </div>
+            <div class="editor-body">
+              <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+              <pre class="code-lines"><code>
+<span class="kw">SELECT</span> <span class="pln">c.name, </span><span class="fn">COUNT</span><span class="pln">(o.id) </span><span class="kw">AS</span> <span class="pln">orders</span>
+<span class="kw">FROM</span> <span class="pln">customers c</span>
+<span class="kw">JOIN</span> <span class="pln">orders o </span><span class="kw">ON</span> <span class="pln">c.id = o.customer_id</span>
+<span class="kw">WHERE</span> <span class="pln">c.country = </span><span class="str">'Mexico'</span>
+<span class="kw">GROUP BY</span> <span class="pln">c.name</span>
+<span class="kw">ORDER BY</span> <span class="pln">orders </span><span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="pln">10;</span>
+</code></pre>
+            </div>
+          </div>
+
+          <div class="editor-card is-front">
+            <div class="editor-inner">
+              <div class="editor-bar">
+                <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+                <span class="filename">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
+                  query.sql
+                </span>
+              </div>
+              <div class="editor-body">
+                <div class="line-numbers" id="lineNumbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+                <pre class="code-lines" id="typedCode" aria-live="polite"><span class="prompt-caret" aria-hidden="true">&gt;</span><code id="codeContent"></code><span class="editor-cursor" aria-hidden="true">|</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-card is-back">
+            <div class="head">
+              <div class="head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+              <div class="head-title">Progreso</div>
+            </div>
+            <div class="sub">Nivel actual</div>
+            <div class="rank">Query Warrior ⚔️</div>
+            <div class="chart-wrap">
+              <svg viewBox="0 0 240 78" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#9b6bff" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#9b6bff" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <line class="chart-axis" x1="0" y1="70" x2="240" y2="70"></line>
+                <line class="chart-axis" x1="0" y1="0" x2="0" y2="70"></line>
+                <path class="chart-area" fill="url(#chartAreaGrad)" d="M6,60 C40,60 50,30 80,30 C110,30 130,50 170,50 C210,50 220,20 234,20 L234,70 L6,70 Z"></path>
+                <path class="chart-line" stroke="#a98bff" d="M6,60 C40,60 50,30 80,30 C110,30 130,50 170,50 C210,50 220,20 234,20"></path>
+                <circle cx="6" cy="60" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="80" cy="30" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="170" cy="50" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="234" cy="20" r="2.3" fill="#c9b6ff"></circle>
+              </svg>
+            </div>
+            <div class="progress-foot"><span>Retos completados</span><b>55 / 73</b></div>
+            <div class="progress-track"><div class="progress-fill" style="width:58%"></div></div>
+          </div>
+
+          <div class="progress-card is-mid">
+            <div class="head">
+              <div class="head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+              <div class="head-title">Progreso</div>
+            </div>
+            <div class="sub">Nivel actual</div>
+            <div class="rank">Query Warrior ⚔️</div>
+            <div class="chart-wrap">
+              <svg viewBox="0 0 240 78" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartAreaGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#9b6bff" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#9b6bff" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <line class="chart-axis" x1="0" y1="70" x2="240" y2="70"></line>
+                <line class="chart-axis" x1="0" y1="0" x2="0" y2="70"></line>
+                <path class="chart-area" fill="url(#chartAreaGrad2)" d="M6,60 C40,60 50,30 80,30 C110,30 130,50 170,50 C210,50 220,20 234,20 L234,70 L6,70 Z"></path>
+                <path class="chart-line" stroke="#a98bff" d="M6,60 C40,60 50,30 80,30 C110,30 130,50 170,50 C210,50 220,20 234,20"></path>
+                <circle cx="6" cy="60" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="80" cy="30" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="170" cy="50" r="2.3" fill="#c9b6ff"></circle>
+                <circle cx="234" cy="20" r="2.3" fill="#c9b6ff"></circle>
+              </svg>
+            </div>
+            <div class="progress-foot"><span>Retos completados</span><b>55 / 73</b></div>
+            <div class="progress-track"><div class="progress-fill" style="width:58%"></div></div>
+          </div>
+
+          <div class="progress-card is-front" id="progressCardFront">
+            <div class="head">
+              <div class="head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+              <div class="head-title">Progreso</div>
+            </div>
+            <div class="sub">Nivel actual</div>
+            <div class="rank" id="userRank">👶 SQL Baby</div>
+
+            <div class="chart-wrap">
+              <svg viewBox="0 0 240 78" preserveAspectRatio="none" id="progressChart" aria-hidden="true">
+                <defs>
+                  <linearGradient id="chartAreaGradFront" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#9b6bff" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#9b6bff" stop-opacity="0"/>
+                  </linearGradient>
+                  <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                    <feMerge>
+                      <feMergeNode in="blur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                  <filter id="waveShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#9b6bff" flood-opacity="0.6">
+                      <animate attributeName="dx" values="0;6;0;-6;0" dur="3s" repeatCount="indefinite"/>
+                      <animate attributeName="dy" values="0;2;0;-2;0" dur="3.2s" repeatCount="indefinite"/>
+                      <animate attributeName="flood-opacity" values="0.4;0.7;0.4;0.6;0.4" dur="2.8s" repeatCount="indefinite"/>
+                    </feDropShadow>
+                  </filter>
+                </defs>
+                <g id="chartGridH"></g>
+                <g id="chartGridV"></g>
+                <line class="chart-axis" x1="0" y1="70" x2="240" y2="70"></line>
+                <line class="chart-axis" x1="0" y1="0" x2="0" y2="70"></line>
+
+                <clipPath id="chartClip">
+                  <rect x="0" y="0" width="0" height="78" />
+                </clipPath>
+                <g clip-path="url(#chartClip)" filter="url(#waveShadow)">
+                  <path id="chartArea" class="chart-area" fill="url(#chartAreaGradFront)"></path>
+                  <path id="chartLine" class="chart-line" stroke="#a98bff"></path>
+                  <path id="chartLineGlow" class="chart-line-glow" stroke="#a98bff"></path>
+                </g>
+                <g id="chartDots"></g>
+              </svg>
+            </div>
+
+            <div class="progress-foot">
+              <span class="left">
+                <span>Retos completados</span>
+                <span class="percentage" id="percentLabel">0%</span>
+              </span>
+              <b id="completedCount">0 / 73</b>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill" style="width:0%; background: linear-gradient(90deg, #7c5cff, #4f8dff);"></div>
+            </div>
+          </div>
+
+          <div class="connection-line"></div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Secciones ocultas -->
+  <section class="features" id="proyecto" style="display:none;">...</section>
+  <section class="ranks" id="roadmap" style="display:none;">...</section>
+  <section class="donate-cta" id="donate" style="display:none;">...</section>
+</main>
+
+<!-- ================================================================ -->
+<!-- MODAL 1: ROADMAP -->
+<!-- ================================================================ -->
+<div class="modal-overlay" id="roadmapModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-scroll">
+      <header class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v16H6.5A2.5 2.5 0 0 0 4 20.5V4.5z"/>
+              <path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">SQL Dominance Roadmap™</h2>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="Cerrar modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-content">
+        <p>Una ruta de aprendizaje progresiva diseñada para llevar tus habilidades SQL desde los fundamentos hasta el nivel profesional.</p>
+        
+        <div class="roadmap-phases">
+          <div class="phase-block">
+            <div class="phase-title">Fase I — Fundamentos Relacionales <span class="badge">Base</span></div>
+            <div class="phase-desc">Mentalidad relacional, SELECT, WHERE, ORDER BY, agregaciones, GROUP BY y JOINs.</div>
+            <div class="phase-modules-tags">
+              <span>Mentalidad Relacional</span>
+              <span>SELECT</span>
+              <span>WHERE</span>
+              <span>ORDER BY</span>
+              <span>Agregaciones</span>
+              <span>GROUP BY & HAVING</span>
+              <span>JOINs</span>
+            </div>
+          </div>
+
+          <div class="phase-block">
+            <div class="phase-title">Fase II — SQL Intermedio <span class="badge">Intermedio</span></div>
+            <div class="phase-desc">Subqueries, CTEs y Window Functions para análisis más avanzados.</div>
+            <div class="phase-modules-tags">
+              <span>Subqueries</span>
+              <span>CTEs</span>
+              <span>Window Functions</span>
+            </div>
+          </div>
+
+          <div class="phase-block">
+            <div class="phase-title">Fase III — SQL Profesional <span class="badge">Avanzado</span></div>
+            <div class="phase-desc">Business Analytics, Data Modeling, PostgreSQL Core y Performance.</div>
+            <div class="phase-modules-tags">
+              <span>Business Analytics</span>
+              <span>Data Modeling</span>
+              <span>PostgreSQL Core</span>
+              <span>SQL Performance</span>
+            </div>
+          </div>
+
+          <div class="phase-block">
+            <div class="phase-title">Fase IV — Nivel Industria <span class="badge">Expert</span></div>
+            <div class="phase-desc">Analytics Engineering y preparación para entrevistas técnicas.</div>
+            <div class="phase-modules-tags">
+              <span>Analytics Engineering</span>
+              <span>SQL Interview Mastery™</span>
+            </div>
+          </div>
+
+          <div class="phase-block">
+            <div class="phase-title">Fase V — SQL Moderno <span class="badge">Dominance</span></div>
+            <div class="phase-desc">Patrones avanzados, diseño de soluciones y SQL + AI Engineer™.</div>
+            <div class="phase-modules-tags">
+              <span>Advanced SQL Patterns™</span>
+              <span>SQL + AI Engineer™</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-cta">
+        <p>Empieza el reto y descubre tu verdadero nivel de dominio en SQL.</p>
+        <a href="app.html" class="btn-primary">
+          Comenzar a practicar
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="modal-footer">
+        <div class="version">
+          <span>Version 1.0 MVP</span>
+          <span class="dot"></span>
+          <span>SQL Challenge Lab</span>
+        </div>
+        <div class="built">Built with HTML, CSS and JavaScript</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- MODAL 2: ABOUT -->
+<!-- ================================================================ -->
+<div class="modal-overlay" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-scroll">
+      <header class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 2h6M10 2v6.2a2 2 0 0 1-.3 1L5.4 16.8A2 2 0 0 0 7.1 20h9.8a2 2 0 0 0 1.7-3.2L14.3 9.2a2 2 0 0 1-.3-1V2"/>
+              <path d="M8.5 14h7"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">About SQL Challenge Lab</h2>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="Cerrar modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-content">
+        <p>
+          <span class="highlight">SQL Challenge Lab</span> es un proyecto personal creado con una misión sencilla: <span class="accent">ayudar a más personas a desarrollar habilidades reales de SQL</span> mediante práctica estructurada y progresiva.
+        </p>
+        <p>
+          Actualmente existen miles de tutoriales, cursos y videos para aprender SQL. También existen motores de bases de datos gratuitos que cualquiera puede instalar para practicar por su cuenta.
+        </p>
+        <p>
+          El problema no suele ser la falta de recursos.<br>
+          El verdadero desafío es <span class="accent">saber qué practicar, en qué orden hacerlo y cómo avanzar</span> desde conceptos básicos hasta consultas complejas utilizadas en entornos profesionales.
+        </p>
+        <span class="separator"></span>
+        <p>
+          Por esa razón nació <span class="highlight">SQL Challenge Lab</span>.<br>
+          La plataforma ha sido diseñada cuidadosamente como una <span class="accent">ruta de aprendizaje basada en retos progresivos</span>, donde cada ejercicio tiene un propósito específico dentro del recorrido.
+        </p>
+        <p>
+          Cada desafío desarrolla nuevas habilidades y prepara el camino para los siguientes niveles de dificultad.
+        </p>
+        <p>
+          Además de servir como herramienta de aprendizaje individual, SQL Challenge Lab también puede utilizarse como <span class="accent">sistema de evaluación</span> para profesores, instructores y centros educativos.
+        </p>
+      </div>
+
+      <div class="modal-features">
+        <div class="modal-feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <h4>Mission</h4>
+          <p>Transformar el aprendizaje de SQL en una experiencia práctica basada en la resolución de problemas reales.</p>
+        </div>
+
+        <div class="modal-feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h4>Enfoque</h4>
+          <ul>
+            <li>73 retos progresivos, verificados contra SQL real</li>
+            <li>Ruta de aprendizaje cuidadosamente diseñada</li>
+            <li>Casos inspirados en situaciones reales</li>
+            <li>Desarrollo de pensamiento analítico</li>
+            <li>100% gratuito y open source</li>
+          </ul>
+        </div>
+
+        <div class="modal-feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <h4>Para quién es</h4>
+          <div class="badge-list">
+            <span>Estudiantes</span>
+            <span>Analistas de datos</span>
+            <span>Desarrolladores</span>
+            <span>Profesores</span>
+            <span>Centros educativos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-cta">
+        <p>Empieza el reto y descubre tu verdadero nivel de dominio en SQL.</p>
+        <a href="app.html" class="btn-primary">
+          Comenzar a practicar
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="modal-footer">
+        <div class="version">
+          <span>Version 1.0 MVP</span>
+          <span class="dot"></span>
+          <span>SQL Challenge Lab</span>
+        </div>
+        <div class="built">Built with HTML, CSS and JavaScript</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- MODAL 3: DEVELOPERS -->
+<!-- ================================================================ -->
+<div class="modal-overlay" id="developersModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-scroll">
+      <header class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6 2 12l6 6M16 6l6 6-6 6"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">Developers — Technology Stack</h2>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="Cerrar modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-content">
+        <p>
+          <span class="highlight">SQL Challenge Lab</span> es una plataforma educativa diseñada para ofrecer práctica estructurada de SQL a través de desafíos interactivos, seguimiento de progreso y experiencias de aprendizaje progresivas.
+        </p>
+        <p>El proyecto sigue una arquitectura modular diseñada para evolucionar de una plataforma de aprendizaje ligera a un ecosistema educativo escalable en la nube.</p>
+        
+        <span class="separator"></span>
+
+        <h4 style="font-size:13px; font-weight:700; color:var(--color-text); margin-bottom:8px;">Frontend</h4>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">⚡</span>
+            <div><div class="tech-name">HTML5</div><div class="tech-desc">Estructura semántica</div></div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🎨</span>
+            <div><div class="tech-name">CSS3</div><div class="tech-desc">Diseño moderno y responsive</div></div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🟨</span>
+            <div><div class="tech-name">JavaScript (ES6+)</div><div class="tech-desc">Lógica e interactividad</div></div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">📦</span>
+            <div><div class="tech-name">Git</div><div class="tech-desc">Control de versiones</div></div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🐙</span>
+            <div><div class="tech-name">GitHub</div><div class="tech-desc">Repositorio y colaboración</div></div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🚀</span>
+            <div><div class="tech-name">GitHub Pages</div><div class="tech-desc">Deployment</div></div>
+          </div>
+        </div>
+
+        <h4 style="font-size:13px; font-weight:700; color:var(--color-text); margin-bottom:8px;">Design Principles</h4>
+        <div class="tech-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">Offline First</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">Lightweight Architecture</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">No External Dependencies</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">Responsive Design</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">Fast Loading Experience</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">✅</span>
+            <div class="tech-name" style="font-size:12px;">Educational Focus</div>
+          </div>
+        </div>
+
+        <h4 style="font-size:13px; font-weight:700; color:var(--color-text); margin:12px 0 8px;">Future Development</h4>
+        <div class="tech-grid">
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">🗄️</span>
+            <div class="tech-name" style="font-size:12px;">PostgreSQL</div>
+            <div class="tech-desc" style="font-size:10px;">Base de datos</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">☁️</span>
+            <div class="tech-name" style="font-size:12px;">AWS</div>
+            <div class="tech-desc" style="font-size:10px;">EC2, RDS, S3, CloudFront</div>
+          </div>
+          <div class="tech-item" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <span style="font-size:18px;">🔄</span>
+            <div class="tech-name" style="font-size:12px;">CI/CD</div>
+            <div class="tech-desc" style="font-size:10px;">GitHub Actions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="version">
+          <span>Version 1.0 MVP</span>
+          <span class="dot"></span>
+          <span>SQL Challenge Lab</span>
+        </div>
+        <div class="built">Built with HTML, CSS and JavaScript</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- MODAL 4: GITHUB -->
+<!-- ================================================================ -->
+<div class="modal-overlay" id="githubModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-scroll">
+      <header class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); color:#fff;">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.5v-1.94c-2.78.62-3.37-1.19-3.37-1.19-.46-1.2-1.11-1.52-1.11-1.52-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.9-1.33 2.75-1.05 2.75-1.05.55 1.43.2 2.49.1 2.75.64.72 1.03 1.63 1.03 2.75 0 3.92-2.34 4.78-4.57 5.04.36.32.68.94.68 1.9v2.82c0 .28.18.61.69.5A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">GitHub Repository</h2>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="Cerrar modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-content">
+        <p>
+          <span class="highlight">SQL Challenge Lab</span> es un proyecto open source. Todo el código está disponible en GitHub para que puedas explorarlo, contribuir o usarlo como referencia.
+        </p>
+        
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--color-border-soft); border-radius:var(--radius-sm); padding:20px 24px; margin:16px 0; text-align:center;">
+          <div style="font-size:48px; margin-bottom:8px;">🐙</div>
+          <div style="font-size:16px; font-weight:600; color:var(--color-text);">sql-challenge-lab</div>
+          <a href="https://github.com/ValenciaFCarlos/sql-challenge-lab" target="_blank" style="display:inline-flex; align-items:center; gap:8px; margin-top:8px; color:var(--color-primary); font-weight:500; font-size:14px; transition:color 0.2s;">
+            github.com/ValenciaFCarlos/sql-challenge-lab
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:16px 0;">
+          <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border-soft); border-radius:8px; padding:14px; text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:var(--color-text);">⭐</div>
+            <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Star en GitHub</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border-soft); border-radius:8px; padding:14px; text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:var(--color-text);">🔀</div>
+            <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Fork</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid var(--color-border-soft); border-radius:8px; padding:14px; text-align:center;">
+            <div style="font-size:24px; font-weight:700; color:var(--color-text);">🐛</div>
+            <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Issues</div>
+          </div>
+        </div>
+
+        <p style="font-size:13px; color:var(--color-text-muted); text-align:center;">
+          ¿Quieres contribuir? Abre un issue o envía un pull request. Toda ayuda es bienvenida.
+        </p>
+      </div>
+
+      <div class="modal-cta">
+        <a href="https://github.com/ValenciaFCarlos/sql-challenge-lab" target="_blank" class="btn-primary">
+          Ver en GitHub
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="modal-footer">
+        <div class="version">
+          <span>Version 1.0 MVP</span>
+          <span class="dot"></span>
+          <span>SQL Challenge Lab</span>
+        </div>
+        <div class="built">Built with HTML, CSS and JavaScript</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- MODAL 5: DONATE -->
+<!-- ================================================================ -->
+<div class="modal-overlay" id="donateModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-scroll">
+      <header class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon" style="background:rgba(255,107,107,0.12); border-color:rgba(255,107,107,0.2); color:#ff6b6b;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.8 8.3a5 5 0 0 0-8.3-3.7 5 5 0 0 0-8.3 3.7c0 6.4 8.3 11 8.3 11s8.3-4.6 8.3-11z"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">Apoyar el Proyecto ❤️</h2>
+        </div>
+        <button class="modal-close-btn modal-close" aria-label="Cerrar modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-content">
+        <p>
+          <span class="highlight">SQL Challenge Lab</span> es un proyecto <span class="accent">100% gratuito y open source</span>.
+          Si el contenido te ha ayudado a mejorar tus habilidades SQL, considera apoyar el proyecto con una pequeña contribución.
+        </p>
+        <p style="font-size:13px; color:var(--color-text-muted);">
+          Tu apoyo ayuda a mantener el proyecto activo, desarrollar nuevos contenidos y mejorar la plataforma para todos.
+        </p>
+
+        <div class="donate-options">
+          <div class="donate-option">
+            <div class="left">
+              <span class="emoji">☕</span>
+              <div class="info">
+                <div class="name">Buy Me a Coffee</div>
+                <div class="desc">Donación única, rápida y sencilla</div>
+              </div>
+            </div>
+            <button class="btn-donate" onclick="window.open('https://buymeacoffee.com/valenciaf.carlos', '_blank')">Comprar un café →</button>
+          </div>
+
+          <div class="donate-option">
+            <div class="left">
+              <span class="emoji">💙</span>
+              <div class="info">
+                <div class="name">GitHub Sponsors</div>
+                <div class="desc">Apoya mensualmente o con una donación única</div>
+              </div>
+            </div>
+            <button class="btn-donate" onclick="window.open('https://github.com/sponsors/ValenciaFCarlos', '_blank')">Patrocinar →</button>
+          </div>
+
+          <!-- ⚠️ DESACTIVADO TEMPORALMENTE: apuntaba a 'tuusuario' (placeholder
+               sin rellenar). Reactiva este bloque cuando tengas una cuenta
+               real de PayPal.me y reemplaza la URL. -->
+          <!--
+          <div class="donate-option">
+            <div class="left">
+              <span class="emoji">💳</span>
+              <div class="info">
+                <div class="name">PayPal</div>
+                <div class="desc">Donación única con PayPal</div>
+              </div>
+            </div>
+            <button class="btn-donate" onclick="window.open('https://paypal.me/TU_USUARIO_REAL', '_blank')">Donar vía PayPal →</button>
+          </div>
+          -->
+        </div>
+
+        <p style="font-size:12px; color:var(--color-text-muted); text-align:center; opacity:0.6; margin-top:8px;">
+          Cada contribución, grande o pequeña, es profundamente apreciada. 🙏
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <div class="version">
+          <span>Version 1.0 MVP</span>
+          <span class="dot"></span>
+          <span>SQL Challenge Lab</span>
+        </div>
+        <div class="built">Built with HTML, CSS and JavaScript</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- FREE & OPEN SOURCE TAG -->
+<!-- ================================================================ -->
+<div class="offline-tag">
+  <span class="dot"></span>
+  <span class="label">100% <strong>gratuito y open source</strong></span>
+  <span class="badge">Sin costo</span>
+</div>
+
+<footer style="display:none;">...</footer>
+
+<noscript><style>.wave-ocean{display:none!important}</style></noscript>
+<script>
+  // ======================================================================
+  // Océano de ondas
+  // ======================================================================
+  (function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W = 1440, H = 500;
+
+    var layerDefs = [
+      { el: document.querySelector('.wave-l1'), count: 5,  ampBase: 20, freqBase: 0.0032, speedBase: 0.08, widthBase: 1.1, baseYStart: 40,  baseYStep: 34, strokeW: 1.1 },
+      { el: document.querySelector('.wave-l2'), count: 6,  ampBase: 26, freqBase: 0.0038, speedBase: 0.13, widthBase: 1.3, baseYStart: 70,  baseYStep: 30, strokeW: 1.3 },
+      { el: document.querySelector('.wave-l3'), count: 6,  ampBase: 34, freqBase: 0.0045, speedBase: 0.19, widthBase: 1.6, baseYStart: 130, baseYStep: 28, strokeW: 1.6 },
+      { el: document.querySelector('.wave-l4'), count: 4,  ampBase: 44, freqBase: 0.0052, speedBase: 0.27, widthBase: 2.1, baseYStart: 220, baseYStep: 26, strokeW: 2.1 }
+    ];
+
+    var allLines = [];
+
+    layerDefs.forEach(function(layer, li){
+      for(var i=0; i<layer.count; i++){
+        var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('stroke', 'url(#waveGradient)');
+        path.setAttribute('stroke-width', (layer.strokeW + (i%3)*0.3).toFixed(2));
+        path.setAttribute('stroke-linecap','round');
+        layer.el.appendChild(path);
+        allLines.push({
+          path: path,
+          amp: layer.ampBase + (i % 4) * 6,
+          freq: layer.freqBase + (i % 3) * 0.0009,
+          speed: layer.speedBase + (i % 3) * 0.035,
+          baseY: layer.baseYStart + i * layer.baseYStep,
+          phase: i * 0.7 + li * 1.3,
+          driftPhase: i * 0.9 + li * 0.4
+        });
+      }
+    });
+
+    function waveY(L, x, t){
+      var drift = Math.sin(t * 0.22 + L.driftPhase) * 4;
+      return L.baseY + drift
+        + Math.sin(x * L.freq + t * L.speed + L.phase) * L.amp
+        + Math.cos(x * 0.0021 + t * 0.11 + L.phase * 0.5) * (L.amp * 0.35);
+    }
+
+    function renderLines(t){
+      for(var i=0; i<allLines.length; i++){
+        var L = allLines[i];
+        var pts = [];
+        for(var x=-40; x<=W+40; x+=18){
+          var y = waveY(L, x, t);
+          pts.push((x===-40 ? 'M' : 'L') + x + ',' + y.toFixed(1));
+        }
+        L.path.setAttribute('d', pts.join(' '));
+      }
+    }
+
+    var stop1 = document.getElementById('gStop1');
+    var stop2 = document.getElementById('gStop2');
+    var stop3 = document.getElementById('gStop3');
+    var palette = [
+      [79,141,255],
+      [143,107,255],
+      [209,107,255],
+      [111,89,255]
+    ];
+    function lerp(a,b,f){ return a + (b-a)*f; }
+    function mixColor(t){
+      var n = palette.length;
+      var f = (t % n + n) % n;
+      var i0 = Math.floor(f), i1 = (i0+1) % n;
+      var lf = f - i0;
+      var c0 = palette[i0], c1 = palette[i1];
+      var r = lerp(c0[0], c1[0], lf), g = lerp(c0[1], c1[1], lf), b = lerp(c0[2], c1[2], lf);
+      return 'rgb(' + (r|0) + ',' + (g|0) + ',' + (b|0) + ')';
+    }
+    function renderGradient(t){
+      stop1.setAttribute('stop-color', mixColor(t * 0.06));
+      stop2.setAttribute('stop-color', mixColor(t * 0.06 + 1.1));
+      stop3.setAttribute('stop-color', mixColor(t * 0.06 + 2.2));
+    }
+
+    var particleHost = document.getElementById('waveParticles');
+    var particles = [];
+    var PARTICLE_COUNT = 8;
+    for(var p=0; p<PARTICLE_COUNT; p++){
+      var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('r', (1.6 + Math.random()*1.4).toFixed(2));
+      circle.setAttribute('fill', '#e7d9ff');
+      particleHost.appendChild(circle);
+      particles.push({
+        el: circle,
+        progress: Math.random(),
+        speed: 0.05 + Math.random()*0.055,
+        lane: allLines[Math.floor(Math.random()*allLines.length)]
+      });
+    }
+    function renderParticles(t, dt){
+      for(var i=0; i<particles.length; i++){
+        var pt = particles[i];
+        pt.progress += pt.speed * dt;
+        if(pt.progress > 1.15){
+          pt.progress = -0.1;
+          pt.lane = allLines[Math.floor(Math.random()*allLines.length)];
+          pt.speed = 0.05 + Math.random()*0.055;
+        }
+        var x = -40 + pt.progress * (W + 80);
+        var y = waveY(pt.lane, x, t);
+        var fade = Math.min(1, Math.min(pt.progress / 0.12, (1.05 - pt.progress) / 0.15));
+        fade = Math.max(0, fade);
+        pt.el.setAttribute('cx', x.toFixed(1));
+        pt.el.setAttribute('cy', y.toFixed(1));
+        pt.el.setAttribute('opacity', fade.toFixed(2));
+      }
+    }
+
+    if(reduceMotion){
+      renderLines(0);
+      renderGradient(0);
+      return;
+    }
+
+    var lastTs = 0;
+    function frame(ts){
+      var t = ts * 0.001;
+      var dt = lastTs ? Math.min(0.05, t - lastTs) : 0.016;
+      lastTs = t;
+      renderLines(t);
+      renderGradient(t);
+      renderParticles(t, dt);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  // ======================================================================
+  // Escritura continua del código SQL
+  // ======================================================================
+  (function(){
+    var codeContainer = document.getElementById('codeContent');
+    var lineNumbersEl = document.getElementById('lineNumbers');
+    if(!codeContainer) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var queries = [
+      { lines: [
+        { plain: "SELECT c.name, COUNT(o.id) AS orders", html: '<span class="kw">SELECT</span> <span class="pln">c.name, </span><span class="fn">COUNT</span><span class="pln">(o.id) </span><span class="kw">AS</span> <span class="pln">orders</span>' },
+        { plain: "FROM customers c", html: '<span class="kw">FROM</span> <span class="pln">customers c</span>' },
+        { plain: "JOIN orders o ON c.id = o.customer_id", html: '<span class="kw">JOIN</span> <span class="pln">orders o </span><span class="kw">ON</span> <span class="pln">c.id = o.customer_id</span>' },
+        { plain: "WHERE c.country = 'Mexico'", html: '<span class="kw">WHERE</span> <span class="pln">c.country = </span><span class="str">\'Mexico\'</span>' },
+        { plain: "GROUP BY c.name", html: '<span class="kw">GROUP BY</span> <span class="pln">c.name</span>' },
+        { plain: "ORDER BY orders DESC", html: '<span class="kw">ORDER BY</span> <span class="pln">orders </span><span class="kw">DESC</span>' },
+        { plain: "LIMIT 10;", html: '<span class="kw">LIMIT</span> <span class="pln">10;</span>' }
+      ]},
+      { lines: [
+        { plain: "SELECT department, AVG(salary) AS avg_salary", html: '<span class="kw">SELECT</span> <span class="pln">department, </span><span class="fn">AVG</span><span class="pln">(salary) </span><span class="kw">AS</span> <span class="pln">avg_salary</span>' },
+        { plain: "FROM employees", html: '<span class="kw">FROM</span> <span class="pln">employees</span>' },
+        { plain: "WHERE hire_date >= '2020-01-01'", html: '<span class="kw">WHERE</span> <span class="pln">hire_date &gt;= </span><span class="str">\'2020-01-01\'</span>' },
+        { plain: "GROUP BY department", html: '<span class="kw">GROUP BY</span> <span class="pln">department</span>' },
+        { plain: "HAVING AVG(salary) > 50000", html: '<span class="kw">HAVING</span> <span class="fn">AVG</span><span class="pln">(salary) &gt; 50000</span>' },
+        { plain: "ORDER BY avg_salary DESC;", html: '<span class="kw">ORDER BY</span> <span class="pln">avg_salary </span><span class="kw">DESC</span><span class="pln">;</span>' }
+      ]},
+      { lines: [
+        { plain: "WITH monthly_sales AS (", html: '<span class="kw">WITH</span> <span class="pln">monthly_sales </span><span class="kw">AS</span> <span class="pln">(</span>' },
+        { plain: "  SELECT product_id, SUM(amount) AS total", html: '<span class="pln">  </span><span class="kw">SELECT</span> <span class="pln">product_id, </span><span class="fn">SUM</span><span class="pln">(amount) </span><span class="kw">AS</span> <span class="pln">total</span>' },
+        { plain: "  FROM sales", html: '<span class="pln">  </span><span class="kw">FROM</span> <span class="pln">sales</span>' },
+        { plain: "  GROUP BY product_id", html: '<span class="pln">  </span><span class="kw">GROUP BY</span> <span class="pln">product_id</span>' },
+        { plain: ")", html: '<span class="pln">)</span>' },
+        { plain: "SELECT * FROM monthly_sales", html: '<span class="kw">SELECT</span> <span class="pln">* </span><span class="kw">FROM</span> <span class="pln">monthly_sales</span>' },
+        { plain: "WHERE total > 1000;", html: '<span class="kw">WHERE</span> <span class="pln">total &gt; 1000;</span>' }
+      ]},
+      { lines: [
+        { plain: "SELECT employee_id, salary,", html: '<span class="kw">SELECT</span> <span class="pln">employee_id, salary,</span>' },
+        { plain: "  ROW_NUMBER() OVER (", html: '<span class="pln">  </span><span class="fn">ROW_NUMBER</span><span class="pln">() </span><span class="kw">OVER</span> <span class="pln">(</span>' },
+        { plain: "    PARTITION BY department", html: '<span class="pln">    </span><span class="kw">PARTITION BY</span> <span class="pln">department</span>' },
+        { plain: "    ORDER BY salary DESC", html: '<span class="pln">    </span><span class="kw">ORDER BY</span> <span class="pln">salary </span><span class="kw">DESC</span>' },
+        { plain: "  ) AS rank", html: '<span class="pln">  ) </span><span class="kw">AS</span> <span class="pln">rank</span>' },
+        { plain: "FROM employees;", html: '<span class="kw">FROM</span> <span class="pln">employees;</span>' }
+      ]},
+      { lines: [
+        { plain: "SELECT order_date, amount,", html: '<span class="kw">SELECT</span> <span class="pln">order_date, amount,</span>' },
+        { plain: "  SUM(amount) OVER (", html: '<span class="pln">  </span><span class="fn">SUM</span><span class="pln">(amount) </span><span class="kw">OVER</span> <span class="pln">(</span>' },
+        { plain: "    ORDER BY order_date", html: '<span class="pln">    </span><span class="kw">ORDER BY</span> <span class="pln">order_date</span>' },
+        { plain: "  ) AS running_total,", html: '<span class="pln">  ) </span><span class="kw">AS</span> <span class="pln">running_total,</span>' },
+        { plain: "  RANK() OVER (ORDER BY amount DESC) AS rnk", html: '<span class="pln">  </span><span class="fn">RANK</span><span class="pln">() </span><span class="kw">OVER</span> <span class="pln">(</span><span class="kw">ORDER BY</span> <span class="pln">amount </span><span class="kw">DESC</span><span class="pln">) </span><span class="kw">AS</span> <span class="pln">rnk</span>' },
+        { plain: "FROM orders;", html: '<span class="kw">FROM</span> <span class="pln">orders;</span>' }
+      ]}
+    ];
+
+    function updateLineNumbers(n){
+      if(!lineNumbersEl) return;
+      var nums = [];
+      for(var i=1;i<=n;i++) nums.push(i);
+      lineNumbersEl.innerHTML = nums.join('<br>');
+    }
+
+    function randTypeDelay(){ return 16 + Math.random()*30; }
+
+    function typeLine(lines, idx, lineDivs, onDone){
+      if(idx >= lines.length){ onDone(); return; }
+      var lineDiv = document.createElement('div');
+      codeContainer.appendChild(lineDiv);
+      lineDivs.push(lineDiv);
+      var text = lines[idx].plain;
+      var ci = 0;
+      (function typeChar(){
+        lineDiv.textContent = text.slice(0, ci);
+        if(ci < text.length){
+          ci++;
+          setTimeout(typeChar, randTypeDelay());
+        } else {
+          lineDiv.innerHTML = lines[idx].html;
+          setTimeout(function(){ typeLine(lines, idx+1, lineDivs, onDone); }, 90 + Math.random()*130);
+        }
+      })();
+    }
+
+    function eraseAll(lineDivs, onDone){
+      if(lineDivs.length === 0){ onDone(); return; }
+      var lineDiv = lineDivs[lineDivs.length - 1];
+      var text = lineDiv.textContent;
+      (function eraseChar(){
+        if(text.length > 0){
+          text = text.slice(0, -1);
+          lineDiv.textContent = text;
+          setTimeout(eraseChar, 9);
+        } else {
+          codeContainer.removeChild(lineDiv);
+          lineDivs.pop();
+          setTimeout(function(){ eraseAll(lineDivs, onDone); }, 25);
+        }
+      })();
+    }
+
+    var qi = 0;
+    function runCycle(){
+      var query = queries[qi % queries.length];
+      var lineDivs = [];
+      updateLineNumbers(query.lines.length);
+      typeLine(query.lines, 0, lineDivs, function(){
+        setTimeout(function(){
+          eraseAll(lineDivs, function(){
+            qi++;
+            setTimeout(runCycle, 350);
+          });
+        }, 2600);
+      });
+    }
+
+    if(reduceMotion){
+      var q0 = queries[0];
+      updateLineNumbers(q0.lines.length);
+      q0.lines.forEach(function(l){
+        var d = document.createElement('div');
+        d.innerHTML = l.html;
+        codeContainer.appendChild(d);
+      });
+      return;
+    }
+
+    runCycle();
+  })();
+
+  // ======================================================================
+  // GRÁFICA DE PROGRESO
+  // ======================================================================
+  (function(){
+    var W = 240, H = 70, PAD = 4;
+    var svg = document.getElementById('progressChart');
+    var gridH = document.getElementById('chartGridH');
+    var gridV = document.getElementById('chartGridV');
+    var areaPath = document.getElementById('chartArea');
+    var linePath = document.getElementById('chartLine');
+    var lineGlowPath = document.getElementById('chartLineGlow');
+    var dotsGroup = document.getElementById('chartDots');
+    var progressFill = document.getElementById('progressFill');
+    var completedCount = document.getElementById('completedCount');
+    var percentLabel = document.getElementById('percentLabel');
+    var userRank = document.getElementById('userRank');
+    var clipRect = document.querySelector('#chartClip rect');
+    if(!svg || !clipRect) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var N = 10;
+
+    var rankTitles = [
+      "👶 SQL Baby",
+      "⚔️ SQL Warrior",
+      "🦸 SQL Hero",
+      "🦸‍♂️ SQL Avenger",
+      "⚡ SQL Superhero",
+      "🔥 SQL Super Saiyan",
+      "🐉 SQL Dragon",
+      "👑 SQL Princeps",
+      "🎩 Grand Duke",
+      "👑 SQL King",
+      "🔥 Data Warlord",
+      "👑 SQL Overlord",
+      "🏛️ SQL Senator",
+      "⚔️ SQL Dictator",
+      "👑 SQL Emperor",
+      "💎 SQL Grandmaster",
+      "👁️ SQL Illuminati",
+      "☠️ SQL GOD"
+    ];
+    var rankIndex = 0;
+
+    var colorPalette = [
+      { area: '#4f8dff', line: '#6fe4ff' },
+      { area: '#6f58ff', line: '#a98bff' },
+      { area: '#d16bff', line: '#f5a3ff' },
+      { area: '#ff6b9d', line: '#ffabc5' },
+      { area: '#ffb347', line: '#ffd966' },
+      { area: '#5fe3a1', line: '#a1f5c9' },
+      { area: '#ff6b6b', line: '#ff9e9e' },
+      { area: '#845ec2', line: '#b39bdb' },
+      { area: '#00c9a7', line: '#66e5cb' },
+      { area: '#f9a825', line: '#fbc85a' },
+      { area: '#e84a5f', line: '#f28b9a' },
+      { area: '#6a4c9c', line: '#a98bdb' },
+      { area: '#2c7be5', line: '#6ca6f5' },
+      { area: '#f95e5e', line: '#fba0a0' },
+      { area: '#f7c948', line: '#fbdd8a' },
+      { area: '#00b4d8', line: '#66d9f5' },
+      { area: '#e83e8c', line: '#f28bb5' },
+      { area: '#ffd700', line: '#ffe44a' }
+    ];
+
+    for(var r=1; r<3; r++){
+      var ly = (H/3) * r;
+      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('class','chart-grid-line');
+      line.setAttribute('x1', 0); line.setAttribute('x2', W);
+      line.setAttribute('y1', ly.toFixed(1)); line.setAttribute('y2', ly.toFixed(1));
+      gridH.appendChild(line);
+    }
+    for(var c=1; c<6; c++){
+      var lx = (W/6) * c;
+      var vline = document.createElementNS('http://www.w3.org/2000/svg','line');
+      vline.setAttribute('class','chart-grid-line');
+      vline.setAttribute('y1', 0); vline.setAttribute('y2', H);
+      vline.setAttribute('x1', lx.toFixed(1)); vline.setAttribute('x2', lx.toFixed(1));
+      gridV.appendChild(vline);
+    }
+
+    function genRealisticData(){
+      var vals = [];
+      var minY = PAD + 6;
+      var maxY = H - PAD - 6;
+      for(var k=0; k<N; k++){
+        var t = k / (N - 1);
+        var base = maxY - (maxY - minY) * Math.pow(t, 0.6 + Math.random() * 0.3);
+        var noise = (Math.random() - 0.5) * 18 * (1 - t * 0.3);
+        var spike = Math.sin(t * 7 + Math.random() * 4) * 8 * (1 - t * 0.4);
+        var y = base + noise + spike;
+        y = Math.max(PAD+2, Math.min(H-PAD-2, y));
+        vals.push(y);
+      }
+      return vals;
+    }
+
+    function pointsFromData(data){
+      var pts = [];
+      for(var k=0; k<N; k++){
+        var x = PAD + (k/(N-1)) * (W - PAD*2);
+        var y = data[k];
+        pts.push([x, y]);
+      }
+      return pts;
+    }
+
+    function pathFromPoints(pts){
+      var d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+      for(var k=1; k<pts.length; k++){
+        var prev = pts[k-1], cur = pts[k];
+        var midX = (prev[0] + cur[0]) / 2;
+        d += ' C ' + midX.toFixed(1) + ',' + prev[1].toFixed(1) + ' ' + midX.toFixed(1) + ',' + cur[1].toFixed(1) + ' ' + cur[0].toFixed(1) + ',' + cur[1].toFixed(1);
+      }
+      return d;
+    }
+
+    function areaFromPoints(pts){
+      return pathFromPoints(pts) + ' L' + pts[pts.length-1][0].toFixed(1) + ',' + H + ' L' + pts[0][0].toFixed(1) + ',' + H + ' Z';
+    }
+
+    function setChartData(data, colorIndex){
+      var pts = pointsFromData(data);
+      var pathData = pathFromPoints(pts);
+      var areaData = areaFromPoints(pts);
+      areaPath.setAttribute('d', areaData);
+      linePath.setAttribute('d', pathData);
+      lineGlowPath.setAttribute('d', pathData);
+      var colors = colorPalette[colorIndex % colorPalette.length];
+      var grad = document.querySelector('#chartAreaGradFront');
+      if(grad){
+        var stops = grad.querySelectorAll('stop');
+        if(stops.length >= 2){
+          stops[0].setAttribute('stop-color', colors.area);
+          stops[1].setAttribute('stop-color', colors.area);
+        }
+      }
+      linePath.setAttribute('stroke', colors.line);
+      lineGlowPath.setAttribute('stroke', colors.line);
+      for(var k=0; k<pts.length; k++){
+        dots[k].setAttribute('cx', pts[k][0].toFixed(1));
+        dots[k].setAttribute('cy', pts[k][1].toFixed(1));
+      }
+    }
+
+    var dots = [];
+    for(var d=0; d<N; d++){
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('class','chart-dot');
+      dot.setAttribute('r', '2.3');
+      dotsGroup.appendChild(dot);
+      dots.push(dot);
+    }
+
+    function animateDotsPop(delayBetween){
+      var startTime = performance.now();
+      function step(now){
+        var elapsed = now - startTime;
+        var progress = Math.min(1, elapsed / (N * delayBetween));
+        for(var k=0; k<N; k++){
+          var dotProgress = Math.min(1, (elapsed - k * delayBetween) / 300);
+          if(dotProgress > 0){
+            var scale = 0.3 + 0.7 * (1 - Math.pow(1 - dotProgress, 3));
+            dots[k].setAttribute('transform', 'scale(' + scale + ')');
+            dots[k].setAttribute('opacity', dotProgress);
+          } else {
+            dots[k].setAttribute('transform', 'scale(0)');
+            dots[k].setAttribute('opacity', 0);
+          }
+        }
+        if(progress < 1){
+          requestAnimationFrame(step);
+        } else {
+          for(var k=0; k<N; k++){
+            dots[k].setAttribute('transform', 'scale(1)');
+            dots[k].setAttribute('opacity', '1');
+          }
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function easedProgress(t){
+      var p = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+      var step = Math.sin(t * Math.PI * 12) * 0.03 * (1 - t);
+      return Math.min(1, Math.max(0, p + step));
+    }
+
+    function animateProgress(targetPercent, targetText, duration, callback){
+      var fill = progressFill;
+      var countEl = completedCount;
+      var percentEl = percentLabel;
+      var match = targetText.match(/(\d+)\s*\/\s*(\d+)/);
+      if(!match) return;
+      var targetNum = parseInt(match[1], 10);
+      var total = parseInt(match[2], 10);
+      var startTime = performance.now();
+      var startPercent = parseFloat(fill.style.width) || 0;
+      var startNum = parseInt(countEl.textContent) || 0;
+
+      countEl.classList.add('pulse');
+      setTimeout(function(){ countEl.classList.remove('pulse'); }, 800);
+
+      function step(now){
+        var elapsed = now - startTime;
+        var progress = Math.min(1, elapsed / duration);
+        var eased = easedProgress(progress);
+        var currentPercent = startPercent + (targetPercent - startPercent) * eased;
+        var currentNum = Math.round(startNum + (targetNum - startNum) * eased);
+        fill.style.width = currentPercent + '%';
+        countEl.textContent = currentNum + ' / ' + total;
+        percentEl.textContent = Math.round(currentPercent) + '%';
+
+        if(progress < 1){
+          requestAnimationFrame(step);
+        } else {
+          fill.style.width = targetPercent + '%';
+          countEl.textContent = targetText;
+          percentEl.textContent = Math.round(targetPercent) + '%';
+          if(callback) callback();
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function animateChartReveal(duration, onComplete){
+      var startTime = performance.now();
+      clipRect.setAttribute('width', 0);
+      function step(now){
+        var elapsed = now - startTime;
+        var progress = Math.min(1, elapsed / duration);
+        var eased = progress < 0.5 ? 2*progress*progress : -1 + (4 - 2*progress)*progress;
+        var width = eased * W;
+        clipRect.setAttribute('width', width);
+        if(progress < 1){
+          requestAnimationFrame(step);
+        } else {
+          clipRect.setAttribute('width', W);
+          if(onComplete) onComplete();
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function runUpdateCycle(){
+      var newData = genRealisticData();
+      setChartData(newData, rankIndex);
+      clipRect.setAttribute('width', 0);
+      animateChartReveal(1400, function(){
+        animateDotsPop(100);
+      });
+      var total = 73;
+      var newCompleted = Math.floor(Math.random() * 24) + 40;
+      var newPercent = (newCompleted / total) * 100;
+      var newText = newCompleted + ' / ' + total;
+      setTimeout(function(){
+        animateProgress(newPercent, newText, 1400);
+      }, 200);
+      rankIndex = (rankIndex + 1) % rankTitles.length;
+      userRank.textContent = rankTitles[rankIndex];
+      var colors = colorPalette[rankIndex % colorPalette.length];
+      progressFill.style.background = 'linear-gradient(90deg, ' + colors.area + ', ' + colors.line + ')';
+    }
+
+    function initialSetup(){
+      var initialData = genRealisticData();
+      setChartData(initialData, 0);
+      clipRect.setAttribute('width', 0);
+      animateChartReveal(1800, function(){
+        animateDotsPop(120);
+      });
+      progressFill.style.width = '0%';
+      completedCount.textContent = '0 / 73';
+      percentLabel.textContent = '0%';
+      userRank.textContent = rankTitles[0];
+      setTimeout(function(){
+        animateProgress((55/73)*100, '55 / 73', 1800);
+      }, 300);
+    }
+
+    initialSetup();
+
+    setTimeout(function(){
+      setInterval(runUpdateCycle, 4500);
+    }, 2500);
+  })();
+
+  // ======================================================================
+  // MODAL CONTROLLER
+  // ======================================================================
+  (function() {
+    // Logo recarga la página
+    document.getElementById('brand-logo')?.addEventListener('click', function() {
+      location.reload();
+    });
+
+    // Mapeo de triggers a modales
+    const modals = {
+      about: {
+        trigger: document.getElementById('aboutTrigger'),
+        modal: document.getElementById('aboutModal')
+      },
+      roadmap: {
+        trigger: document.getElementById('roadmapTrigger'),
+        modal: document.getElementById('roadmapModal')
+      },
+      developers: {
+        trigger: document.getElementById('developersTrigger'),
+        modal: document.getElementById('developersModal')
+      },
+      github: {
+        trigger: document.getElementById('githubTrigger'),
+        modal: document.getElementById('githubModal')
+      },
+      donate: {
+        trigger: document.getElementById('donateTrigger'),
+        modal: document.getElementById('donateModal')
+      }
+    };
+
+    function openModal(modal) {
+      if (!modal) return;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    Object.values(modals).forEach(({ trigger, modal }) => {
+      if (!trigger || !modal) return;
+
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal(modal);
+      });
+
+      const closeBtn = modal.querySelector('.modal-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          closeModal(modal);
+        });
+      }
+
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeModal(modal);
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModal(modal);
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
