@@ -1,196 +1,86 @@
 # SQL Challenge Lab™ Philosophy
 
+> **Nota de esta revisión:** se corrigieron cuatro secciones que describían comportamiento o contenido que no existe en la implementación actual (ver `docs/dataset-framework.md` para el detalle técnico de lo que sí existe). El resto del documento se conserva porque está respaldado por el contenido real de los 18 módulos.
+
 ## Why SQL Challenge Lab Exists
 
-SQL Challenge Lab™ was not created to teach SQL syntax.
+SQL Challenge Lab™ no fue creado para enseñar sintaxis de SQL.
 
-The internet already contains thousands of tutorials, videos, courses and documentation explaining SQL commands.
+Internet ya tiene miles de tutoriales, videos, cursos y documentación explicando comandos SQL. Aprender sintaxis no es la parte difícil.
 
-Learning syntax is not the difficult part.
+Lo difícil es desarrollar la capacidad de pensar analíticamente, razonar con datos, y resolver problemas usando SQL. Ese es el problema que SQL Challenge Lab está diseñado para resolver.
 
-The difficult part is developing the ability to think analytically, reason with data and solve problems using SQL.
+## Our Mission
 
-That is the problem SQL Challenge Lab was designed to solve.
+La misión no es enseñar sintaxis de SQL. La misión es enseñar a pensar con datos.
 
----
+Al terminar la plataforma, un estudiante debería poder:
+- Leer queries SQL complejas
+- Explicar queries en lenguaje de negocio
+- Resolver problemas analíticos
+- Diseñar soluciones basadas en datos
+- Pensar relacionalmente
 
-# Our Mission
+## Theory Before Practice, Then Query First Within Each Challenge
 
-The mission is not to teach SQL syntax.
+El curso completo empieza con el **Módulo 0 (Introducción a SQL)**: 16 cards de teoría — qué es SQL, qué no es, su origen, entidad/atributo, Primary Key/Foreign Key — antes de que el estudiante escriba una sola query. Esta base conceptual es intencional: sin entender qué es una entidad o un atributo, la sintaxis de SELECT no tiene contexto.
 
-The mission is to teach people how to think with data.
+**Dentro de cada reto de Practice Mode**, sin embargo, sí aplica un principio de "problema antes que solución": cada reto presenta un enunciado y pide una query, con pistas progresivas que solo revelan la solución completa al final — nunca se muestra la respuesta antes de que el estudiante intente resolverla.
 
-Students should leave the platform with the ability to:
+En resumen: el curso como un todo es *Teoría → Práctica*; cada reto individual dentro de Practice Mode es *Problema → Intento → Pistas progresivas → Solución*.
 
-- Read complex SQL queries
-- Explain queries in business language
-- Solve analytical problems
-- Design data-driven solutions
-- Think relationally
-- Work effectively with modern AI-assisted analytics tools
+## Thinking Before Typing
 
----
+Escribir SQL es solo una pequeña parte de la habilidad. Los analistas profesionales pasan más tiempo pensando que escribiendo.
 
-# Query First™
+Antes de resolver un reto, un estudiante debería entender: qué problema se está resolviendo, qué información se necesita, qué nivel de detalle se requiere, y qué pregunta de negocio se está respondiendo.
 
-Traditional learning platforms usually start with theory.
+SQL se trata como un lenguaje para resolver problemas, no como una colección de comandos.
 
-They explain concepts first and ask students to apply them later.
+## Mental Models Over Syntax
 
-SQL Challenge Lab follows a different approach.
+SQL Challenge Lab enseña, a través de la secuencia de sus módulos, patrones reutilizables en vez de sentencias aisladas:
 
-Learning begins with a real SQL query.
+| Patrón | Módulo donde se enseña |
+|---|---|
+| Projection | Módulo 2 (SELECT Fundamentals) |
+| Filtering | Módulo 3 (Filtering) |
+| Aggregation | Módulo 5 (Aggregations) |
+| Granularity Changes | Módulo 6 (GROUP BY & HAVING) |
+| Set Membership | Módulo 8 (Subqueries — IN/EXISTS) |
+| Ranking | Módulo 10 (Window Functions) |
+| Comparison Against Average | Módulo 8 (subquery escalar) |
 
-Students are exposed to realistic scenarios before receiving explanations.
+*(Nota: esta tabla es un principio de diseño detrás de la secuencia de módulos — no es un campo estructurado que exista por reto en el código. Ver `docs/dataset-framework.md`.)*
 
-The objective is to create curiosity and encourage analytical reasoning.
+El objetivo no es memorizar soluciones. El objetivo es reconocer patrones.
 
-Questions come before answers.
+## Knowledge Panel™ y Thinking Assistant™ — intención de diseño
 
-Observation comes before theory.
+Ambos paneles existen en el SQL Workspace de Practice Mode con la intención de guiar el pensamiento sin dar la respuesta directamente, en vez de generar SQL por el estudiante.
 
-Reasoning comes before memorization.
+**Estado real de implementación:** hoy ambos paneles muestran contenido fijo y genérico, igual en todos los retos — no hacen preguntas específicas por reto todavía. Preguntas como *"¿qué representa cada fila?"* o *"¿estás filtrando o resumiendo?"* son ejemplos de la dirección de diseño futura, no de comportamiento actual. Ver `docs/knowledge-gap-engine.md` para el desarrollo de esta idea como visión de producto.
 
----
+## Evaluation Philosophy
 
-# Thinking Before Typing
+El objetivo no es verificar si el estudiante escribió exactamente la query esperada — distintas soluciones SQL pueden producir el mismo resultado correcto.
 
-Writing SQL is only a small part of the skill.
+La evaluación prioriza, en general: corrección del resultado, calidad de la lógica, comprensión conceptual.
 
-Professional analysts spend more time thinking than typing.
+**Excepción real y documentada:** dos módulos (9 — CTEs, y el reto 8 del Módulo 8 — Subqueries) exigen, además del resultado correcto, el uso de una sintaxis específica (`WITH`, `NOT EXISTS`), porque el objetivo pedagógico de esos retos puntuales es practicar esa sintaxis exacta. Ver `docs/dataset-framework.md`.
 
-Before solving a challenge, students should understand:
+## Reading Queries — una habilidad valiosa, todavía no evaluada directamente
 
-- What problem is being solved
-- What information is required
-- What level of detail is needed
-- What business question is being answered
+Entender SQL ya escrito (no solo escribirlo) es una habilidad real de un analista profesional, y es parte del razonamiento que se le pide a un estudiante al leer los enunciados de cada reto y decidir cómo abordarlos.
 
-SQL is treated as a problem-solving language rather than a collection of commands.
+**Estado real:** los 73 ejercicios de Practice Mode son todos del tipo "escribe una query para lograr X" — ninguno presenta una query ya construida para que el estudiante la interprete o explique sin escribir código. Un módulo o sección dedicada a interpretación de queries ajenas sería una extensión válida, pero no existe todavía.
 
----
+## Final Goal
 
-# Mental Models Over Syntax
+Al completar SQL Challenge Lab™, un estudiante debería ser capaz de: pensar relacionalmente, resolver problemas de negocio con datos, leer y entender SQL complejo, y diseñar soluciones analíticas.
 
-SQL Challenge Lab teaches mental models instead of isolated statements.
-
-Students learn patterns that can be reused across thousands of scenarios.
-
-Examples include:
-
-- Filtering
-- Projection
-- Aggregation
-- Granularity Changes
-- Set Membership
-- Ranking
-- Composition
-- Comparison Against Average
-
-The objective is not to memorize solutions.
-
-The objective is to recognize patterns.
+El objetivo final es simple: enseñar a pensar con datos.
 
 ---
 
-# Knowledge Panel™
-
-The Knowledge Panel™ is not designed to provide answers.
-
-It exists to guide thinking.
-
-Instead of showing solutions, it asks questions that help students reason through the challenge.
-
-Examples:
-
-- What does each row represent?
-- Are you working with individual records or groups?
-- Are you trying to filter or summarize?
-- What business metric are you looking for?
-
-The goal is to create understanding rather than dependency.
-
----
-
-# Thinking Assistant™
-
-The Thinking Assistant™ acts as a strategic mentor.
-
-Instead of generating SQL, it helps students break down problems into smaller steps.
-
-Its purpose is to guide reasoning, not replace it.
-
-Students should discover solutions themselves.
-
-The platform values understanding over speed.
-
----
-
-# Reading Queries Is a Core Skill
-
-Many learners focus exclusively on writing SQL.
-
-Professional work requires both writing and reading.
-
-SQL Challenge Lab emphasizes query interpretation as a first-class skill.
-
-Students should be able to explain:
-
-1. What a query does.
-2. What information it produces.
-3. What business problem it solves.
-4. How it was constructed.
-
-Understanding existing SQL is often more valuable than writing new SQL.
-
----
-
-# Evaluation Philosophy
-
-The goal is not to verify whether a student wrote the exact expected query.
-
-Different SQL solutions can produce the same correct result.
-
-Evaluation prioritizes:
-
-1. Correctness of the result.
-2. Quality of the logic.
-3. Conceptual understanding.
-4. Analytical reasoning.
-
-Students are rewarded for solving problems, not for matching a predefined answer.
-
----
-
-# Human + AI Analytics
-
-Modern analytics professionals work alongside AI tools.
-
-SQL Challenge Lab embraces this reality.
-
-Students learn:
-
-- When AI can help
-- When AI should be questioned
-- How to validate AI-generated SQL
-- How to detect incorrect logic
-- How to maintain critical thinking
-
-AI is treated as an assistant, not a replacement for analytical reasoning.
-
----
-
-# Final Goal
-
-By completing SQL Challenge Lab™, students should be capable of:
-
-- Thinking relationally
-- Solving business problems with data
-- Reading and understanding complex SQL
-- Designing analytical solutions
-- Working with modern analytics tools
-- Using SQL professionally
-
-The ultimate objective is simple:
-
-Teach people how to think with data.
+*Sección "Human + AI Analytics" removida de esta versión: el curso, en su alcance actual de 18 módulos, no incluye contenido sobre validación de SQL generado por IA ni sobre colaboración humano-IA en analítica. Si se agrega ese contenido en el futuro (sería una extensión natural del Módulo 16, Interview Mastery, dado que muchas entrevistas hoy sí tocan este tema), esta sección debería reincorporarse con una referencia al módulo real que la enseñe.*
