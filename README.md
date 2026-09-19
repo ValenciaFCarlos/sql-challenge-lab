@@ -193,7 +193,17 @@ MIT — libre de usar, modificar y compartir.
 
 ---
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b0b4d36c-211d-409e-8b1e-b6afe5f0839d" />
+---
 
+## 👋 Thanks for visiting SQL Challenge Lab
+
+Good luck on your SQL Quest.
+
+Keep learning.
+Keep building.
+Keep improving.
+
+— Valencia F. Carlos 
 
 <p align="center">
   Hecho como proyecto educativo y pieza de portfolio.
