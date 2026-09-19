@@ -143,11 +143,56 @@ Los 73 ejercicios de Practice Mode fueron probados ejecutando SQL real contra un
 - Una prueba de integración instanciando el `ChallengeEngine` real para confirmar que resolver retos efectivamente desbloquea el siguiente módulo.
 - Simulación de la cadena completa de los 18 módulos, de principio a fin, confirmando el otorgamiento correcto de badges y el manejo del caso especial de fin de curso (Módulo 17, sin módulo siguiente).
 
+
+🗺️ Cómo Navegar
+
+Ruta recomendada:
+
+Comienza aquí con el README (página actual) para entender qué es el proyecto, el stack y la arquitectura.
+
+Sigue el roadmap de 18 módulos en orden — el sistema de desbloqueo progresivo te guía solo.
+
+Empieza por el Módulo 0 (Introducción a SQL) si vienes desde cero.
+
+Alterna Learning Mode y Practice Mode según el tipo de cada módulo.
+
+Usa el SQL Thinking Assistant antes de escribir código en los retos — te ayuda a razonar la solución.
+
+Practica con los quizzes al final de cada módulo de teoría (umbral de aprobación configurable).
+
+Revisa tu galería de badges para ver tu progreso visual y saber qué te falta.
+
+Vuelve al roadmap cuando cierres la pestaña — todo tu progreso persiste en localStorage.
+
+## 📞 Soporte y Comentarios
+
+¿Encontraste un bug o tienes una sugerencia? Este es un proyecto vivo que mejora con la comunidad.
+
+- 🐛 **[Reportar un bug](https://github.com/ValenciaFCarlos/sql-challenge-lab/issues/new)** — incluye módulo, ejercicio y navegador usado.
+- 💡 **[Proponer una mejora](https://github.com/ValenciaFCarlos/sql-challenge-lab/issues/new)** — nuevos retos, datasets o mejoras al motor.
+- ✅ **¿Completaste los 18 módulos?** Comparte tu Galería de Badges completa.
+
+¡Buena suerte en tu viaje de SQL! 🌟
+
+> SQL no se trata solo de sintaxis — se trata de pensar en datos, resolver problemas y comunicar soluciones. **¡Tú puedes!** 💪
+
+---
+
+## 📞 Contacto
+
+👨‍💻 **Carlos Francisco Valencia Camacho**
+- 💼 LinkedIn: [valencia-carlos](https://www.linkedin.com/in/valencia-carlos-77a1b213b/)
+- 🐙 GitHub: [@ValenciaFCarlos](https://github.com/ValenciaFCarlos)
+- 🌐 Repo: [sql-challenge-lab](https://github.com/ValenciaFCarlos/sql-challenge-lab)
+
+
 ## 📜 Licencia
 
 MIT — libre de usar, modificar y compartir.
 
 ---
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b0b4d36c-211d-409e-8b1e-b6afe5f0839d" />
+
 
 <p align="center">
   Hecho como proyecto educativo y pieza de portfolio.
