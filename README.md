@@ -1,17 +1,12 @@
 # SQL Challenge Lab™
 
 **Un MVP educativo 100% local para aprender SQL de verdad — sin backend, sin base de datos remota, sin login.**
-
-<img width="1536" height="1024" alt="yes2" src="https://github.com/user-attachments/assets/14511a09-7ab2-4a36-abf8-f7d38e139574" />
-
-<img width="1536" height="1024" alt="LAB" src="https://github.com/user-attachments/assets/971c5de7-bc63-401e-a0dd-34bbb39beb8b" />
-<img width="1536" height="1024" alt="img3" src="https://github.com/user-attachments/assets/6d237660-11d1-419b-9163-8df8529dc202" />
-
-
-
 Todo corre en el navegador: el motor SQL es [SQL.js](https://sql.js.org/) (SQLite compilado a WebAssembly), y el progreso se guarda con `localStorage`. No hay servidor, no hay costos de infraestructura, no hay cuentas de usuario — solo abres el proyecto y empiezas a escribir SQL real.
 
 ---
+
+<img width="1536" height="1024" alt="yes2" src="https://github.com/user-attachments/assets/14511a09-7ab2-4a36-abf8-f7d38e139574" />
+
 
 ## 🎯 Qué es esto
 
@@ -22,6 +17,8 @@ SQL Challenge Lab™ es un curso interactivo de 18 módulos que lleva a alguien 
 
 Al completar un módulo se otorga un badge, se desbloquea el siguiente, y el progreso persiste entre sesiones.
 
+<img width="1536" height="1024" alt="LAB" src="https://github.com/user-attachments/assets/971c5de7-bc63-401e-a0dd-34bbb39beb8b" />
+
 ## ✨ Características
 
 - **73 ejercicios SQL reales**, verificados contra SQLite genuino — no validaciones de texto ni resultados hardcodeados.
@@ -30,6 +27,8 @@ Al completar un módulo se otorga un badge, se desbloquea el siguiente, y el pro
 - **Progreso persistente**: cerrar la pestaña y volver no reinicia nada.
 - **Sistema de desbloqueo progresivo**: cada módulo se habilita al completar el anterior.
 - **Cero configuración de backend**: es HTML + CSS + JavaScript (ES Modules) puro, más SQL.js vía CDN.
+
+<img width="1536" height="1024" alt="img3" src="https://github.com/user-attachments/assets/6d237660-11d1-419b-9163-8df8529dc202" />
 
 ## 🗺️ Roadmap del curso
 
