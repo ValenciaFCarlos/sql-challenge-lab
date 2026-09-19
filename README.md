@@ -17,7 +17,8 @@ SQL Challenge Lab™ es un curso interactivo de 18 módulos que lleva a alguien 
 
 Al completar un módulo se otorga un badge, se desbloquea el siguiente, y el progreso persiste entre sesiones.
 
-<img width="1536" height="1024" alt="LAB" src="https://github.com/user-attachments/assets/971c5de7-bc63-401e-a0dd-34bbb39beb8b" />
+<img width="1536" height="1024" alt="b2cab5b1-b33e-4c05-ac11-983cf50c2cee" src="https://github.com/user-attachments/assets/23e8c71e-5072-4dd7-91aa-1072c11869ef" />
+
 
 ## ✨ Características
 
